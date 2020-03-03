@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/game.css">
+    <title>Document</title>
+</head>
+<body>
+    <table>
+        <tr style="height: 3rem;"><td><h1><span id="username" style="margin-left: .5rem;"></span> <span style="position: absolute; right: .5rem;" id="score"></span></h1></td></tr>
+        <tr>
+            <td>
+                <div class="grid-container" id="content">
+            </td>
+        </tr>
+    </table>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        let socket;
+
+        $(() => {
+            socket = io();
+
+            socket.on("new-question", (num_questions) => {
+                let colors = ["green", "red", "yellow", "blue"];
+                $("div#content").html("");
+                $("div#content").removeClass();
+                $("div#content").addClass("grid-container");
+                for (var i = 0; i < 4; i++){
+                    if (i < num_questions) {
+                        let color = colors[i];
+                        let div = $(`<div class="grid-item ${color}" id="choice:${i}"></div>`);
+                        $("div#content").append(div);
+                        div.click(function() {
+                            let id = $(this).attr("id")
+                            id = id.substring(id.indexOf("choice:") + "choice:".length);
+                            socket.emit("give-answer", id);
+
+                            //give waiting screen:
+                            $("div#content").html("waiting for everyone").removeClass().addClass("result rainbow");
+                        })
+                    }
+                }
+            });
+
+            socket.on("give-user-data", (name, score) => {
+                $("#username").html(name);
+                $("#score").html(score);
+            });
+
+            socket.on("answer-result", (correct, score) => {
+                if (score != null){
+                    $("#score").html(score);
+                }
+                $("div#content").html("").removeClass();
+                let div;
+                if (correct == true){
+                    $("div#content").addClass("result true").html("your answer was correct");
+                    
+                } else {
+                    $("div#content").addClass("result false").html("your answer was incorrect");
+                }
+                
+            });
+
+            $("div#content").html("waiting for question to start").removeClass().addClass("result rainbow");
+
+
+        })
+    </script>
+</body>
+</html>

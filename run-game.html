@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/run-game.css">
+    <title>Playing Kadoot</title>
+</head>
+<body>
+    <table>
+        <tr style="height: 10rem; vertical-align: top;">
+            <td class="question-info">
+                <h1>Question: <span style="position: absolute; right: 0; padding-right: .5rem; user-select: none;" id="next-button">continue</span></h1>
+                <p id="question"></p>
+            </td>
+        </tr>
+        <tr>
+            <td id="content" class="button-holder">
+                <div class="grid-button hidden" id="id0"></div>
+                <div class="grid-button hidden" id="id1"></div>
+                <div class="grid-button hidden" id="id2"></div>
+                <div class="grid-button hidden" id="id3"></div>
+            </td>
+        </tr>
+    </table>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        let socket;
+
+        $(() => {
+            socket = io();
+
+            socket.emit("start-game");
+
+            let colors = ["green", "red", "yellow", "blue"];
+
+            for (let i = 0; i < 4; i++){
+                $(`#id${i}`).removeClass().addClass(`grid-button ${colors[i]} hidden`);
+            }
+
+            socket.on("new-question-info", (question, choices) => {
+                $("#question").html(question);
+                $("#content").html("").removeClass().addClass("button-holder");
+
+                for (var i = 0; i < 4; i++){
+                    if (i < choices.length){
+                        $(`#content`).append($(`<div class="grid-button ${colors[i]}" id="id${i}">${choices[i]}</div>`));
+                    }else {
+                        $(`#content`).append($(`<div class="grid-button hidden" id="id${i}"></div>`));
+                    }
+                }
+            });
+
+            $("#next-button").click(() => {
+                socket.emit("next-question");
+            });
+        });
+    </script>
+</body>
+</html>

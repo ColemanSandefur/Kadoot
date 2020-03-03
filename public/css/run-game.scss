@@ -1,0 +1,80 @@
+%grid-center {
+    display: grid;
+    align-items: center;
+    justify-items: center;
+}
+
+body {
+    padding: 0;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+    font-family: "Roboto", sans-serif;
+}
+
+table {
+    height: 100%;
+    width: 100%
+}
+
+td {
+    padding: 0;
+}
+
+#question {
+    font-size: 2rem;
+}
+
+.button-holder{
+    display: grid;
+    grid-template-columns: auto auto;
+    height:100%;
+    width: 100%;
+}
+
+#next-button{
+    cursor: pointer;
+}
+
+.grid-button {
+    @extend %grid-center;
+    border: none;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 5px;
+    font-size: 2rem;
+    text-align: center;
+    color: white;
+
+    &.red {
+        background-color: red;
+    }
+
+    &.green {
+        background-color: green;
+    }
+
+    &.blue {
+        background-color: blue;
+    }
+
+    &.yellow {
+        background-color: yellow;
+        color: black;
+    }
+
+    &.hidden {
+        visibility: hidden;
+    }
+}
+
+#graph {
+    @extend %grid-center;
+}
+
+@for $i from 1 through 100 {
+    .percentage-#{$i} {
+        $value: ($i * 1%);
+        height: $value;
+    }
+}

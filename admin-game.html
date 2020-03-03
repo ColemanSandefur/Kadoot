@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="css/admin-game.css">
+    <title>Kadoot</title>
+</head>
+<body>
+    <div class="content">
+        <h1><span class="game-id"></span><span style="position: absolute; right: 0;"><p id="start-game" class="button-accept">start</p></span></h1>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        var socket
+
+        $(() => {
+            socket = io();
+
+            socket.on("give-game-id", (game_id) => {
+                $(".game-id").html("" + game_id);
+            });
+
+            socket.on("user-connected", (name) => {
+                $("body").append($(`<p>${name}</p>`));
+            });
+
+            $("#start-game").click(() => {
+                let form = $(`<form method="POST" action="/admin-game" style="visibility: hidden"></form>`);
+                $("body").append(form);
+                form.submit();
+            });
+        });
+    </script>
+</body>
+</html>

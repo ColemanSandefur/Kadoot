@@ -1,0 +1,102 @@
+body {
+    margin: 0;
+    padding: 0;
+    height: 100vh;
+    width: 100vw;
+}
+
+* {
+    font-family: "Roboto", sans-serif;
+}
+
+h1 {
+    padding: 0;
+    margin: 0;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: auto auto;
+    height: 100%;
+}
+
+.grid-item {
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    border: none;
+    border-radius: 10px;
+    padding: 20px;
+    margin: 5px;
+    font-size: 30px;
+    text-align: center;
+    cursor: pointer;
+
+    &.red {
+        background-color: red;
+    }
+    
+    &.green {
+        background-color: green;
+    }
+    
+    &.blue {
+        background-color: blue;
+    }
+    
+    &.yellow {
+        background-color: yellow;
+    }
+
+    &:hover{
+        border: solid;
+        border-width: 5px;
+        padding: 15px;
+        transition: border-width .2s, padding .2s;
+        transition-timing-function: linear;
+    }
+}
+
+
+
+table {
+    height: 100%;
+    width: 100%;
+}
+
+.result {
+    height: 100%;
+    width: 100%;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+    color: white;
+    font-size: 2rem;
+
+    &.true{
+        background-color: green;
+    }
+
+    &.false{
+        background-color: red;
+    }
+}
+
+td {
+    padding: 0;
+    margin: 0;
+}
+
+@keyframes rainbow {
+    0%  {background-color: red;}
+    33% {background-color: green;}
+    66% {background-color: blue;}
+    100% {background-color: red;}
+}
+
+.rainbow{
+    animation-name: rainbow;
+    animation-duration: 20s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+}

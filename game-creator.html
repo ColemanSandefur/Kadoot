@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/game-creator.css">
+    <title>Create Game</title>
+</head>
+<body>
+    <div class="title-bar">
+        <p>search games <input type="text" class="search-bar"></p>
+    </div>
+    <div class="content">
+        <ul id="games">
+        </ul>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        var socket;
+
+        $(() => {
+            socket = io();
+            
+            //Automatically adds some results to the page when it's loaded
+            socket.emit("search-games", "", (dat) => {
+                formatData(dat);
+            });
+            
+            //Searches games when the searchbar's data is changed and displays
+            //the games when the search is complete
+            $(".search-bar").keyup(function() {
+                socket.emit("search-games", $(this).val(), (dat) => {
+                    formatData(dat);
+                });
+            });
+        });
+
+        function formatData(dat){
+            $("#games").html("");
+            for (let i = 0; i < dat.length; i++){
+                let game_name = dat[i][0];
+                let game_id = dat[i][1];
+
+                let list = $(`<li>${game_name}</li>`);
+                let span = $(`<span class="create-game" id="gameId=${game_id};"><p>create</p></span>`);
+                $(list).append(span);
+                $("#games").append(list);
+                span.click(function() {
+                    let id = $(this).attr("id");
+                    id = id.substring(id.indexOf("game_id=") + "game_id=".length, id.indexOf(";", id.indexOf("game_id=")));
+                    
+                    let form = $(`<form method="POST" action="/game-creator" style="visibility: hidden"><input name="game_id" value="${id}"></form>`);
+                    $("body").append(form);
+                    form.submit();
+                });
+            }
+        }
+    </script>
+</body>
+</html>
