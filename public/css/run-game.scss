@@ -46,35 +46,45 @@ td {
     text-align: center;
     color: white;
 
-    &.red {
-        background-color: red;
-    }
-
-    &.green {
-        background-color: green;
-    }
-
-    &.blue {
-        background-color: blue;
-    }
-
-    &.yellow {
-        background-color: yellow;
-        color: black;
-    }
-
     &.hidden {
         visibility: hidden;
     }
 }
 
-#graph {
-    @extend %grid-center;
+.red {
+    background-color: red;
+    color: white;
 }
 
-@for $i from 1 through 100 {
+.green {
+    background-color: green;
+    color: white;
+}
+
+.blue {
+    background-color: blue;
+    color: white;
+}
+
+.yellow {
+    background-color: yellow;
+    color: black;
+}
+
+#graph-holder {
+    display: grid;
+    width: 100%;
+    height: 100%;
+}
+
+@for $i from 0 through 100 {
     .percentage-#{$i} {
         $value: ($i * 1%);
+        $value2: ((100 - $i) * 1%);
         height: $value;
+        position: relative;
+        top: $value2;
+        width: 10%;
+        display: inline-block;
     }
 }

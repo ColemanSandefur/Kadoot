@@ -126,7 +126,7 @@ export class Game {
             }
         }
 
-        this.host?.emit("give-question-results", this.user_data.length, this.user_response, this.quiz.getCurQuestion()[2]);
+        this.host?.emit("give-question-results", this.user_response, this.quiz.getCurQuestion()[2]);
 
         this.cur_question_number++;
     }

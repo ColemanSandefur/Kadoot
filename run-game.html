@@ -50,6 +50,31 @@
                     }
                 }
             });
+            
+            socket.on("give-question-results", (user_response, correct_answers) => {
+                let responses = {};
+                for (let key in user_response){
+                    if (responses[user_response[key]] == null){
+                        responses[user_response[key]] = 1;
+                    } else {
+                        responses[user_response[key]]++;
+                    }
+                }
+
+                $("#content").html(`<table id="" style="height: 100%; width: 100%;"><tr id="graph-holder" style="vertical-align: bottom;"><td><div style="text-align: center; height: 100%;" id="graph-centerer"></div></td></tr><tr><td id="bottom-bar" style="height: 3rem"></td></tr></table>`).removeClass().addClass("table-holder");
+                let i = -1;
+                console.log(responses);
+                let num_responses = Object.keys(user_response).length;
+                for (let key in (responses)){
+                    if (responses[key] == 0){
+                        return; 
+                    } else {
+                        console.log(i);
+                        $("#graph-centerer").append(`<div class="percentage-${num_responses/responses[key] * 100} ${colors[key]}">${responses[key]}</div>`)
+                    }
+                }
+                
+            });
 
             $("#next-button").click(() => {
                 socket.emit("next-question");

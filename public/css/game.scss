@@ -97,6 +97,6 @@ td {
 .rainbow{
     animation-name: rainbow;
     animation-duration: 20s;
-    animation-timing-function: linear;
+    animation-timing-function: ease-in-out;
     animation-iteration-count: infinite;
 }
