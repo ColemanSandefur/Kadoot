@@ -100,7 +100,7 @@ export class Game {
             return;
         }
 
-
+        this.cur_question_number++;
 
         let results = this.quiz.gradeQuestion(this.user_response);
 
@@ -126,9 +126,9 @@ export class Game {
             }
         }
 
-        this.host?.emit("give-question-results", this.user_response, this.quiz.getCurQuestion()[2]);
+        this.host?.emit("give-question-results", this.user_response, this.quiz.getCurQuestion()[2], this.quiz.getCurQuestion()[1].length);
 
-        this.cur_question_number++;
+        
     }
 
     private sleep(ms: number) {

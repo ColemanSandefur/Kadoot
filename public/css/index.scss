@@ -1,5 +1,5 @@
 body {
-    background-color: orange;
+    background-color: #0f4c75;
     margin: 0;
     height: 100vh;
     display: grid;
@@ -9,6 +9,15 @@ body {
 
 * {
     font-family: "Roboto", sans-serif;
+    color: white;
+}
+
+.title {
+    position: relative;
+    top: -9rem;
+    margin-bottom: -8rem;
+    font-family: 'Gloria Hallelujah', cursive; 
+    font-size: 3rem;
 }
 
 .form-holder {
@@ -23,6 +32,8 @@ body {
             height: 2rem;
             padding: 0 5px;
             font-size: 1.5rem;
+            background-color: #1b262c;
+            color: white;
         }
 
         button{
@@ -30,6 +41,8 @@ body {
             border-radius: 10px;
             height: 2rem;
             font-size: 1.5rem;
+            background-color: #1b262c;
+            color: white;
 
             &:hover{
                 cursor: pointer;

@@ -1,3 +1,8 @@
+* {
+    font-family: "Roboto", sans-serif;
+    color: white;
+}
+
 %grid-center {
     display: grid;
     align-items: center;
@@ -10,6 +15,7 @@ body {
     width: 100vw;
     height: 100vh;
     font-family: "Roboto", sans-serif;
+    background-color: #0f4c75;
 }
 
 table {
@@ -25,11 +31,29 @@ td {
     font-size: 2rem;
 }
 
+.question-info {
+    padding: .5rem;
+    font-size: 1.5rem;
+    h1 {
+        padding: 0;
+        margin: 0;
+    }
+}
+
 .button-holder{
+    // background-color: white;
+    
+    visibility: visible;
     display: grid;
     grid-template-columns: auto auto;
     height:100%;
     width: 100%;
+}
+
+#content {
+    background-color: #1b262c;
+    border: none;
+    border-radius: 10px;
 }
 
 #next-button{
@@ -79,12 +103,19 @@ td {
 
 @for $i from 0 through 100 {
     .percentage-#{$i} {
-        $value: ($i * 1%);
-        $value2: ((100 - $i) * 1%);
+        $value: ($i * 1%) * .95 + 5%;
+        $value2: ((100% - $value));
         height: $value;
         position: relative;
         top: $value2;
         width: 10%;
         display: inline-block;
+        margin: {
+            left: 10px;
+            right: 10px;
+        }
+        border: none;
+        border-top-left-radius: 10px;
+        border-top-right-radius: 10px;
     }
 }

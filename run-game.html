@@ -41,6 +41,8 @@
             socket.on("new-question-info", (question, choices) => {
                 $("#question").html(question);
                 $("#content").html("").removeClass().addClass("button-holder");
+                $("#content").css("visibility", "visible");
+                
 
                 for (var i = 0; i < 4; i++){
                     if (i < choices.length){
@@ -51,8 +53,13 @@
                 }
             });
             
-            socket.on("give-question-results", (user_response, correct_answers) => {
+            socket.on("give-question-results", (user_response, correct_answers, num_choices) => {
                 let responses = {};
+                console.log(correct_answers.length);
+                for (let i = 0; i < num_choices; i++) {
+                    responses[i] = 0;
+                }
+
                 for (let key in user_response){
                     if (responses[user_response[key]] == null){
                         responses[user_response[key]] = 1;
@@ -67,10 +74,9 @@
                 let num_responses = Object.keys(user_response).length;
                 for (let key in (responses)){
                     if (responses[key] == 0){
-                        return; 
+                        $("#graph-centerer").append(`<div class="percentage-0 ${colors[key]}">${responses[key]}</div>`);    
                     } else {
-                        console.log(i);
-                        $("#graph-centerer").append(`<div class="percentage-${num_responses/responses[key] * 100} ${colors[key]}">${responses[key]}</div>`)
+                        $("#graph-centerer").append(`<div class="percentage-${num_responses/responses[key] * 100} ${colors[key]}">${responses[key]}</div>`);
                     }
                 }
                 

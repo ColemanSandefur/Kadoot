@@ -6,9 +6,12 @@
     <title>Kadoot</title>
 </head>
 <body>
-    <div class="content">
-        <h1><span class="game-id"></span><span style="position: absolute; right: 0;"><p id="start-game" class="button-accept">start</p></span></h1>
+    <div class="top-bar">
+        <p style="font-size: 3rem; padding: 0; margin: 0; margin-bottom: .5rem;">Game Code:</p>
+        <p class="game-id"></p><p id="start-game" class="button-accept" >start</p>
     </div>
+
+    <div class="players"></div>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
@@ -22,7 +25,7 @@
             });
 
             socket.on("user-connected", (name) => {
-                $("body").append($(`<p>${name}</p>`));
+                $(".players").append($(`<div>${name}</div>`));
             });
 
             $("#start-game").click(() => {
