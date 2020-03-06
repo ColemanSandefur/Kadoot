@@ -12,6 +12,9 @@
     </div>
 
     <div class="players"></div>
+    <audio autoplay loop>
+        <source src="Electro Cabello.mp3", type="audio/mpeg">
+    </audio>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
@@ -25,7 +28,8 @@
             });
 
             socket.on("user-connected", (name) => {
-                $(".players").append($(`<div>${name}</div>`));
+                let div = $(`<div>${name}</div>`);
+                $(".players").append(div);
             });
 
             $("#start-game").click(() => {

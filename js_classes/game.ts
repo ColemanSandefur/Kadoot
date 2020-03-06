@@ -51,13 +51,17 @@ export class Game {
 
         socket.on("next-question", () => {
             if (this.quiz && this.cur_question_number == this.quiz.curQuestionIndex()){
-                console.log("question already running");
+                console.log("stopping question");
                 this.stopQuestion();
                 return;
             }
             if (this.quiz && this.cur_question_number > this.quiz.curQuestionIndex()){
                 console.log("next question");
                 this.quiz?.nextQuestion();
+            } if (this.quiz?.getNumQuestions() == this.quiz?.curQuestionIndex()){
+                console.log("game finished");
+                this.finalResults();
+                return;
             }
 
             this.startQuestion();
@@ -86,17 +90,20 @@ export class Game {
 
         this.sleep(10000).then(() => {
             console.log("time up!");
-            this.stopQuestion();
+            this.stopQuestion(questionIndex);
         });
     }
 
-    public stopQuestion(){
+    public stopQuestion(question_number?: number){
         if (this.quiz == null){
             return
         }
 
         //if question already advanced: skip
-        if (this.cur_question_number != this.quiz.curQuestionIndex()) {
+        if (question_number!= null && question_number != this.quiz.curQuestionIndex()) {
+            return;
+        }
+        if (this.cur_question_number != this.quiz.curQuestionIndex() || this.quiz.curQuestionIndex() == this.quiz.getNumQuestions()) {
             return;
         }
 
@@ -127,8 +134,34 @@ export class Game {
         }
 
         this.host?.emit("give-question-results", this.user_response, this.quiz.getCurQuestion()[2], this.quiz.getCurQuestion()[1].length);
+    }
 
-        
+    public finalResults(){
+        let placing: {cookie: string, score: number, name: string}[] = [];
+
+        // let cur_place: number = Object.keys(this.user_data).length;
+        for (let cur_cookie in this.user_data){
+            placing.push({cookie: cur_cookie, score: this.user_data[cur_cookie].score, name: this.user_data[cur_cookie].name});
+        }
+
+        placing.sort((a, b) => a.score > b.score ? -1 : a.score < b.score ? 1 : 0);
+
+        for (let cur_cookie in this.user_sockets){
+            let cur_score = this.user_data[cur_cookie].score;
+            let cur_name = this.user_data[cur_cookie].name;
+            
+            this.user_sockets[cur_cookie]?.emit("final-score", placing.indexOf({cookie: cur_cookie, score: cur_score, name: cur_name}) + 1, cur_score);
+        }
+
+        let score: number[] = [];
+        let name: string[] = [];
+
+        for (let i = 0; i < placing.length; i++){
+            score.push(placing[i].score);
+            name.push(placing[i].name);
+        }
+
+        this.host?.emit("final-game-results", score, name);
     }
 
     private sleep(ms: number) {

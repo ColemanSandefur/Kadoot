@@ -6,6 +6,18 @@ export interface Question {
     answer_index: number[];
 }
 
+/* 
+["What year did OBD2 get legaly mandated in the U.S.", ["1994", "1999", "1986", "1982"], [0]],
+["What is the sin(30)", ["sqrt(2)/2", "1/2", "Undfined", "sqrt(3)/2"], [1]],
+["What is your favorite color", ["#ff0000", "#00ff00", "#00000ff", "#ffffff"], []],
+["What question number is this?", ["1", "2", "3", "4"], [3]],
+["What is the scala equivalent of switch?", ["val","future","match","case"], [2]],
+["Which C function will allocate memory for an array or struct?", ["free()", "malloc()", "new()", "create()"], [1]],
+["What question number is this?", ["5", "6", "7", "8"], [2]],
+["What is Integer.MAX_VALUE?", ["2147483647", "2147483648","2147483646", "-2147483648"], [0]],
+["Which of these vehicles was available with a boxer 4 cylinder engine? (H4)", ["Honda Civic", "Subaru Forester", "Honda Spree", "Toyota 86"], [1,3]]
+*/
+
 export class QuestionManager{
     private author: string;
     private name: string;
@@ -20,6 +32,10 @@ export class QuestionManager{
 
     public getCurQuestion(): [string, string[], number[]] {
         return this.questions[this.cur_question];
+    }
+
+    public getNumQuestions(): number {
+        return this.questions.length;
     }
 
     public curQuestionIndex(): number {
@@ -70,6 +86,11 @@ export class QuestionManager{
                 res(data);
             });
         });
+    }
+
+    public static saveQuiz(game_name: string, author_name: string, questions: string) {
+        // let jString = JSON.stringify(questions);
+        DatabaseManager.dbQuery("INSERT INTO quizes (game_name, author_name, questions) VALUES (?, ?, ?)", [game_name, author_name, questions]);
     }
 
     private static makeRegex(query: string) {

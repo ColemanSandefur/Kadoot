@@ -22,6 +22,9 @@
             </td>
         </tr>
     </table>
+    <audio autoplay loop>
+        <source src="Electro Cabello.mp3", type="audio/mpeg">
+    </audio>
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
@@ -38,6 +41,9 @@
                 $(`#id${i}`).removeClass().addClass(`grid-button ${colors[i]} hidden`);
             }
 
+            // $("#content").html(`<div style="text-align: center; height: 100%; width: 100%;"><div class="place third"><p style="position: inline-block; padding: 0; margin: 0">Bob</p><p style="position: inline-block; padding: 0; margin: 0">1330</p></div><div class="place first"></div><div class="place second"></div></div>`).removeClass().addClass("place-screen");
+            
+
             socket.on("new-question-info", (question, choices) => {
                 $("#question").html(question);
                 $("#content").html("").removeClass().addClass("button-holder");
@@ -52,10 +58,21 @@
                     }
                 }
             });
+
+            socket.on("final-game-results", (scores, names) => {
+                //1st 3 places
+                //scores = scores[]
+                //names = names[]
+                $("#question").html("");
+                $("#content").html(`<div style="width: 100%; height: 100%; overflow-y: scroll;"><ol class="place-screen" type="1"></ol></div>`).removeClass();
+                for (let i = 0; i < scores.length; i++){
+                    $(".place-screen").append(`<li>${names[i]}<span style="margin-left: 2rem;">${scores[i]}</span></li>`);
+                }
+            });
             
             socket.on("give-question-results", (user_response, correct_answers, num_choices) => {
+                console.log(num_choices);
                 let responses = {};
-                console.log(correct_answers.length);
                 for (let i = 0; i < num_choices; i++) {
                     responses[i] = 0;
                 }
@@ -70,16 +87,18 @@
 
                 $("#content").html(`<table id="" style="height: 100%; width: 100%;"><tr id="graph-holder" style="vertical-align: bottom;"><td><div style="text-align: center; height: 100%;" id="graph-centerer"></div></td></tr><tr><td id="bottom-bar" style="height: 3rem"></td></tr></table>`).removeClass().addClass("table-holder");
                 let i = -1;
-                console.log(responses);
                 let num_responses = Object.keys(user_response).length;
                 for (let key in (responses)){
+                    
                     if (responses[key] == 0){
-                        $("#graph-centerer").append(`<div class="percentage-0 ${colors[key]}">${responses[key]}</div>`);    
+                        $("#graph-centerer").append(`<div class="percentage-0 ${colors[key]}" id="question${key}">${responses[key]}</div>`);    
                     } else {
-                        $("#graph-centerer").append(`<div class="percentage-${num_responses/responses[key] * 100} ${colors[key]}">${responses[key]}</div>`);
+                        $("#graph-centerer").append(`<div class="percentage-${responses[key]/num_responses * 100} ${colors[key]}" id="question${key}">${responses[key]}</div>`);
                     }
                 }
-                
+                for (let i = 0; i < correct_answers.length; i++) {
+                    $(`#question${correct_answers[i]}`).addClass("correct");
+                }
             });
 
             $("#next-button").click(() => {
