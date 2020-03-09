@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="css/quiz-creator.css">
+    <title>Quiz Creator</title>
+</head>
+<body>
+    <table cellspacing="0" cellpadding="0" style="height: 100%; width: 100%; border:none">
+        <tr>
+            <td class="top-bar">
+                <input type="text" id="quiz-name-input" name="quiz-name-input" placeholder="Quiz Name"><input type="text" id="author-name-input" name="author-name-input" placeholder="Author Name"><div class="create-button"><div>create</div></div>
+
+            </td>
+        </tr>
+        <tr>
+            <td class="content">
+                <div class="side-bar">
+                    <!-- <div class="add-question"><div>+</div></div> -->
+                </div>
+                <div class="main-content">
+                    <table style="height: 100%; width: 100%; padding: 0; margin: 0;">
+                        <tr style="height: 4rem; width: 100%; font-size: 2rem;">
+                            <td style="padding: .5rem;"><input type="text" placeholder="Question" name="question-input" id="question-input" style="visibility: hidden;"></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="button-holder"></div>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+    </table>
+    
+
+    
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(() => {
+            let colors = ["red", "green", "blue", "purple"];
+            let questions = [];
+            let cur_question_index = -1;
+
+            $("#question-input").keyup(function() {
+                if (cur_question_index < 0 || cur_question_index > questions.length){
+                    return;
+                }
+
+                questions[cur_question_index].question = $(this).val();
+                reloadQuestions();
+            });
+
+            function addAnswerButton(parent){
+                let add_button = $(`<div class="button dark-blue" id="add-answer"><div>+</div></div>`);
+                parent.append(add_button);
+                add_button.click(function() {
+                    if (cur_question_index < 0 && questions[cur_question_index].choices.length > 4){
+                        return
+                    }
+                    questions[cur_question_index].choices.push("");
+                    reloadButtons();
+                });
+            }
+
+            function reloadButtons() {
+                if (cur_question_index < 0){
+                    $(".button-holder").html("");
+                    $('#question-input').html("").css("visibility", "hidden");
+                    // addAnswerButton($(".button-holder"));
+                    
+                    return;
+                }
+
+                $("#question-input").css("visibility", "visible");
+
+                let cur_question = questions[cur_question_index];
+                $("#question-input").val(cur_question.question);
+
+                let button_holder = $(".button-holder");
+                button_holder.html("");
+                
+                for (let i = 0; i < cur_question.choices.length; i++) {
+                    let button = $(`<div class="button ${colors[i]}" id="button${i}"></div>`);
+
+                    let input = $(`<input id="input${i}">`);
+                    let close_button = $(`<div class="button exit-button"><div>x</div></div>`);
+                    let answer_button = $(`<div class="button answer-button"><div>answer</div></div>`);
+
+                    input.val(cur_question.choices[i]);
+                    
+                    for (let j = 0; j < cur_question.answers.length; j++){
+                        if (cur_question.answers[j] == i){
+                            answer_button.addClass("accept");
+                        }
+                    }
+
+                    ////////////////////////////////////////////////
+                    //// wire up the input /////////////////////////
+                    ////////////////////////////////////////////////
+
+                    input.keyup(function(event) {
+                        let id = $(this).attr("id").substring("input".length);
+                        cur_question.choices[id] = $(this).val();
+                    });
+
+                    ////////////////////////////////////////////////
+                    //// wire up the close button //////////////////
+                    ////////////////////////////////////////////////
+
+                    close_button.click(function() {
+                        let id = $(this).parent().attr("id").substring("button".length);
+                        
+                        cur_question.choices.splice(id, 1);
+                        for (let j = 0; j < cur_question.answers; j++){
+                            if (cur_question.answers[j] == id){
+                                cur_question.answers.splice(j, 1);
+                                j--;
+                            } else if (cur_question.answers[j] > id){
+                                cur_question.answers[j]--;
+                            }
+                        }
+                        reloadButtons();
+                    });
+
+                    ////////////////////////////////////////////////
+                    //// wire up the answer button /////////////////
+                    ////////////////////////////////////////////////
+
+                    answer_button.click(function() {
+                        let id = $(this).parent().attr("id").substring("button".length);
+                        $(this).toggleClass("accept");
+
+                        for (let j = 0; j < cur_question.answers.length; j++){
+                            if (cur_question.answers[j] == id) {
+                                cur_question.answers.splice(j, 1);
+                            }
+                        }
+
+                        if ($(this).hasClass("accept")){
+                            cur_question.answers.push(Number.parseInt(id));
+                        }
+
+                        reloadButtons();
+                    });
+
+                    if (i == cur_question_index) {
+                        button.addClass("selected");
+                    }
+
+                    button.append(close_button).append(answer_button).append(input);
+
+                    button_holder.append(button);
+                }
+
+                if (button_holder.children().length < 4){
+                    addAnswerButton(button_holder);
+                }
+            }
+
+            // reloadButtons();
+
+            function addQuestionButton(parent){
+                let add_button = $(`<div class="add-question"><div>+</div></div>`);
+                parent.append(add_button);
+
+                add_button.click(function() {
+                    questions.push({question: "", choices: [], answers: []});
+                    cur_question_index = questions.length - 1;
+                    reloadButtons();
+                    reloadQuestions();
+                });
+            }
+
+            function reloadQuestions() {
+                let side_bar = $(".side-bar")
+                side_bar.html("");
+
+                for (let i = 0; i < questions.length; i++){
+                    let button = $(`<div id="question${i}">${questions[i].question}</div>`);
+                    let close_button = $(`<div class="exit-question-button">x</div>`);
+
+                    close_button.click(function() {
+                        let id = button.attr("id").substring("question".length);
+                        questions.splice(id, 1);
+                        if (cur_question_index == id){
+                            cur_question_index--;
+                        }
+                        if (questions.length > 0 && cur_question_index < 0){
+                            cur_question_index = 0;
+                        }
+                        reloadQuestions();
+                        reloadButtons();
+                        
+                    });
+
+                    button.append(close_button);
+                    
+                    button.click(function() {
+                        let id = $(this).attr("id").substring("question".length);
+                        cur_question_index = id;
+                        $(this).parent().children().removeClass("selected");
+                        $(this).addClass("selected");
+                        reloadButtons();
+                    })
+
+                    if (i == cur_question_index) {
+                        button.addClass("selected");
+                    }
+
+                    side_bar.append(button);
+                }
+
+                addQuestionButton($(".side-bar"));
+            }
+
+            reloadQuestions();
+
+            function reformatForStreaming() {
+                let data = [];
+                for (let i = 0; i < questions.length; i++){
+                    let cur_question = questions[i];
+                    data.push([cur_question.question, cur_question.choices, cur_question.answers]);
+                }
+                console.log();
+                return data;
+            }
+
+            $(".create-button").click(() => {
+                let quiz_name = $("#quiz-name-input");
+                let author_name = $("#author-name-input");
+                console.log(reformatForStreaming());
+                let form = $(`<form method="POST" action="/quiz-creator" style="visibility: hidden"></form>`);
+                let input = $(`<input name="game-data" id="game-data">`);
+                console.log(reformatForStreaming());
+                input.val(JSON.stringify(reformatForStreaming()));
+
+                form.append(quiz_name);
+                form.append(author_name);
+                form.append(input);
+
+                $("body").append(form);
+
+                form.submit();
+            });
+        });
+    </script>
+</body>
+</html>

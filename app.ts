@@ -94,6 +94,18 @@ app.get("/run-game", (req, res) => {
     res.sendFile(__dirname + "/run-game.html");
 })
 
+app.get("/quiz-creator", (req, res) => {
+    res.sendFile(__dirname + "/quiz-creator.html");
+});
+
+app.post("/quiz-creator", (req, res) => {
+    res.redirect("/game-creator");
+    console.log(req.body);
+    console.log(req.body["game-data"]);
+
+    QuestionManager.saveQuiz(req.body["quiz-name-input"], req.body["author-name-input"], req.body["game-data"]);
+});
+
 io.on("connection", (socket) => {
     SocketManager.addListeners(socket);
 });

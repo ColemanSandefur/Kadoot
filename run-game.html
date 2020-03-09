@@ -68,6 +68,7 @@
                 for (let i = 0; i < scores.length; i++){
                     $(".place-screen").append(`<li>${names[i]}<span style="margin-left: 2rem;">${scores[i]}</span></li>`);
                 }
+                $(".question-info").html("<h1>Results</h1>");
             });
             
             socket.on("give-question-results", (user_response, correct_answers, num_choices) => {
