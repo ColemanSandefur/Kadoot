@@ -7,11 +7,20 @@ export class GameManager {
     private static games: Record<number, Game> = {};
 
     public static createGame(game_id: number, question_id: number){
+
+        function clearCookies(user_data: {[cookie: string]: {name: string, score: number}}){
+            for (let cookie in user_data){
+                UserManager.deleteCookie(cookie);
+            }
+        }
+
         GameManager.games[game_id] = new Game(game_id, question_id, (callback: any) => {
+            clearCookies(GameManager.games[game_id].getUserData());
             delete GameManager.games[game_id];
         });
 
         this.sleep(3600000).then(() => { //wait for an hour then delete
+            clearCookies(GameManager.games[game_id].getUserData());
             delete GameManager.games[game_id];
         });
     }

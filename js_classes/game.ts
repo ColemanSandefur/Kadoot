@@ -220,6 +220,10 @@ export class Game {
         });
     }
 
+    public getUserData(){
+        return this.user_data;
+    }
+
     private getUserId(cookie: string): string{
         cookie += ";";
         let userIndex = cookie.indexOf("user_id=");
