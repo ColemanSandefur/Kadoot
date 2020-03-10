@@ -6,7 +6,13 @@ export class GameManager {
     private static games: Record<number, Game> = {};
 
     public static createGame(game_id: number, question_id: number){
-        GameManager.games[game_id] = new Game(game_id, question_id);
+        GameManager.games[game_id] = new Game(game_id, question_id, (callback: any) => {
+            delete GameManager.games[game_id];
+        });
+
+        this.sleep(20000).then(() => { //wait for an hour then delete
+            delete GameManager.games[game_id];
+        });
     }
 
     public static AddUser(cookie: string, username: string, game_id: number) {
@@ -55,5 +61,11 @@ export class GameManager {
             output += Math.floor(Math.random() * 10);
         }
         return parseInt(output);
+    }
+
+    private static sleep(ms: number) {
+        return new Promise((res, rej) => {
+            setTimeout(res, ms);
+        });
     }
 }

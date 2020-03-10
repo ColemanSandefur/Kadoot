@@ -1,7 +1,6 @@
 import socket_io = require("socket.io");
 import {GameManager} from "./game-manager";
 import {QuestionManager} from "./question-manager";
-// import {DatabaseManager, RowPacket} from "./database-manager";
 
 export class SocketManager {
     static addListeners(socket: socket_io.Socket){
@@ -16,8 +15,6 @@ export class SocketManager {
                 for (let i = 0; i < dat.length; i++){
                     arr.push([dat[i].game_name, dat[i].id]);
                 }
-
-                console.log("callback");
                 callback(arr);
             });
         });

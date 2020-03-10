@@ -27,9 +27,14 @@
                 $(".game-id").html("" + game_id);
             });
 
-            socket.on("user-connected", (name) => {
-                let div = $(`<div>${name}</div>`);
+            socket.on("user-connected", (name, id) => {
+                let div = $(`<div id="user${id}">${name}</div>`);
                 $(".players").append(div);
+
+                div.click(function() {
+                    socket.emit("kick", id);
+                    $(this).remove();
+                });
             });
 
             $("#start-game").click(() => {

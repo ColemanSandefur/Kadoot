@@ -7,14 +7,19 @@ export class Game {
     private quiz_id: number;
     private user_sockets: {[cookie: string]: socket_io.Socket}= {}
     private user_data:  {[cookie: string]: {name: string, score: number}} = {};
+    private user_id: {[id: number]: string} = {};
+    private kicked_users: {[cookie: string]: boolean} = {};
     private user_response: {[cookie: string]: number} = {};
     private quiz: QuestionManager | null = null;
     private correct_point_val = 100;
     private cur_question_number: number = -1;
+    private last_id: number = -1;
+    private game_finished_callback: any;
     
-    constructor(game_id: number, quiz_id: number){
+    constructor(game_id: number, quiz_id: number, callback: any){
         this.game_id = game_id;
         this.quiz_id = quiz_id;
+        this.game_finished_callback = callback;
         QuestionManager.loadQuiz(quiz_id).then((quiz) => {
             this.quiz = quiz;
         });
@@ -36,8 +41,6 @@ export class Game {
                 return;
             } 
             if (this.cur_question_number != -1) {
-                console.log("game already started");
-                
                 return;
             }
 
@@ -51,26 +54,32 @@ export class Game {
 
         socket.on("next-question", () => {
             if (this.quiz && this.cur_question_number == this.quiz.curQuestionIndex()){
-                console.log("stopping question");
                 this.stopQuestion();
                 return;
             }
             if (this.quiz && this.cur_question_number > this.quiz.curQuestionIndex()){
-                console.log("next question");
                 this.quiz?.nextQuestion();
             } if (this.quiz?.getNumQuestions() == this.quiz?.curQuestionIndex()){
-                console.log("game finished");
                 this.finalResults();
+                this.game_finished_callback();
                 return;
             }
 
             this.startQuestion();
         });
+
+        socket.on("kick", (id) => {
+            let cookie = this.user_id[id];
+            this.user_sockets[cookie]?.emit("kicked");
+            delete this.user_data[cookie];
+            delete this.user_sockets[cookie];
+            delete this.user_response[cookie];
+            delete this.user_id[id];
+            this.kicked_users[cookie] = true;
+        });
     }
 
     public startQuestion(){
-        console.log("starting question");
-
         if (this.quiz == null){
             return;
         }
@@ -89,7 +98,6 @@ export class Game {
         let questionIndex = this.quiz.curQuestionIndex();
 
         this.sleep(10000).then(() => {
-            console.log("time up!");
             this.stopQuestion(questionIndex);
         });
     }
@@ -120,10 +128,8 @@ export class Game {
             if (results != null && results.indexOf(cookie) > -1){
                 
                 if (this.user_data[cookie] != null){
-                    console.log(`score before: ${this.user_data[cookie].score}`);
                     let user_dat = this.user_data[cookie];
                     user_dat.score += this.correct_point_val;
-                    console.log(`score after: ${this.user_data[cookie].score}`);
                     this.user_sockets[cookie].emit("answer-result", true, user_dat.score);
                 } else {
                     this.user_sockets[cookie].emit("answer-result", true);
@@ -146,11 +152,14 @@ export class Game {
 
         placing.sort((a, b) => a.score > b.score ? -1 : a.score < b.score ? 1 : 0);
 
-        for (let cur_cookie in this.user_sockets){
-            let cur_score = this.user_data[cur_cookie].score;
-            let cur_name = this.user_data[cur_cookie].name;
-            
-            this.user_sockets[cur_cookie]?.emit("final-score", placing.indexOf({cookie: cur_cookie, score: cur_score, name: cur_name}) + 1, cur_score);
+        for (let i = 0; i < placing.length; i++){
+            let cur_place = placing[i];
+
+            let score = cur_place.score;
+            let name = cur_place.name;
+            let cookie = cur_place.cookie;
+
+            this.user_sockets[cookie]?.emit("final-score", i + 1, score);
         }
 
         let score: number[] = [];
@@ -171,14 +180,21 @@ export class Game {
     }
 
     public addUser(cookie: string, name: string){
+        let id = ++this.last_id
         this.user_data[cookie] = {"name": name, "score": 0};
+        this.user_id[id] = cookie;
 
         if (this.host != null)
-            this.host.emit("user-connected", name);
+            this.host.emit("user-connected", name, id);
     }
 
     public reconnectUser(socket: socket_io.Socket){
         let cookie = this.getUserId(socket.handshake.headers.cookie);
+
+        if (this.kicked_users[cookie] != null && this.kicked_users[cookie]) {
+            return;
+        }
+
         this.user_sockets[cookie] = socket;
 
         //add socket listeners

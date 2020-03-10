@@ -63,7 +63,14 @@
                 } else {
                     $("div#content").addClass("result false").html("your answer was incorrect");
                 }
-                
+            });
+
+            socket.on("final-score", (place, score) => {
+                $("div#content").html(`<div style="text-align: center;"><h1 style="font-size: 3rem;">you placed</h1><h1 style="font-size: 4rem;">${place}</h1></div>`);
+            });
+
+            socket.on("kicked", () => {
+                $("div#content").html("You've been kicked!").removeClass().addClass("result false")
             });
 
             $("div#content").html("waiting for question to start").removeClass().addClass("result rainbow");
