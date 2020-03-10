@@ -34,7 +34,7 @@ export class QuestionManager{
         this.cur_question++;
     }
 
-    public gradeQuestion(input: {[cookie: string]: number;}) {
+    public gradeQuestion(input: {[cookie: string]: {response: number, time: number}}) {
         let output: string[] = [];
 
         let question = this.questions[this.cur_question];
@@ -42,7 +42,7 @@ export class QuestionManager{
         for (let cookie in input){
             for (let i = 0; i < question[2].length; i++){
                 console.log(`their answer: ${input[cookie]}, correct answer: ${question[2][i]}`);
-                if (question[2][i] == input[cookie]){
+                if (question[2][i] == input[cookie].response){
                     console.log("correct");
                     output.push(cookie);
                     break;

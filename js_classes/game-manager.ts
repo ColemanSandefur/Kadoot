@@ -10,7 +10,7 @@ export class GameManager {
             delete GameManager.games[game_id];
         });
 
-        this.sleep(20000).then(() => { //wait for an hour then delete
+        this.sleep(3600000).then(() => { //wait for an hour then delete
             delete GameManager.games[game_id];
         });
     }

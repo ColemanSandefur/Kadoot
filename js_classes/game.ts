@@ -9,12 +9,14 @@ export class Game {
     private user_data:  {[cookie: string]: {name: string, score: number}} = {};
     private user_id: {[id: number]: string} = {};
     private kicked_users: {[cookie: string]: boolean} = {};
-    private user_response: {[cookie: string]: number} = {};
+    private user_response: {[cookie: string]: {response: number, time: number}} = {};
     private quiz: QuestionManager | null = null;
     private correct_point_val = 100;
     private cur_question_number: number = -1;
     private last_id: number = -1;
     private game_finished_callback: any;
+    private question_max_time: number = 10000;
+    private question_cur_time: number = Date.now();
     
     constructor(game_id: number, quiz_id: number, callback: any){
         this.game_id = game_id;
@@ -97,7 +99,9 @@ export class Game {
 
         let questionIndex = this.quiz.curQuestionIndex();
 
-        this.sleep(10000).then(() => {
+        this.question_cur_time = Date.now();
+
+        this.sleep(this.question_max_time).then(() => {
             this.stopQuestion(questionIndex);
         });
     }
@@ -129,7 +133,7 @@ export class Game {
                 
                 if (this.user_data[cookie] != null){
                     let user_dat = this.user_data[cookie];
-                    user_dat.score += this.correct_point_val;
+                    user_dat.score += Math.floor((((this.question_max_time-this.user_response[cookie].time) / this.question_max_time) * .75 + 1) * this.correct_point_val);
                     this.user_sockets[cookie].emit("answer-result", true, user_dat.score);
                 } else {
                     this.user_sockets[cookie].emit("answer-result", true);
@@ -139,7 +143,13 @@ export class Game {
             }
         }
 
-        this.host?.emit("give-question-results", this.user_response, this.quiz.getCurQuestion()[2], this.quiz.getCurQuestion()[1].length);
+        let response: number[] = [];
+
+        for (let key in this.user_response){
+            response.push(this.user_response[key].response);
+        }
+
+        this.host?.emit("give-question-results", response, this.quiz.getCurQuestion()[2], this.quiz.getCurQuestion()[1].length);
     }
 
     public finalResults(){
@@ -207,7 +217,11 @@ export class Game {
             socket.emit("give-user-data", user_dat.name, user_dat.score);
         }
         socket.on("give-answer", (answer) => {
-            this.user_response[cookie] = <number>answer;
+            console.log(this.user_response);
+            this.user_response[cookie] = {"response": <number>answer, "time": Date.now() - this.question_cur_time};
+            // this.user_response[cookie].response = <number>answer;
+            // this.user_response[cookie].time = Date.now() - this.question_cur_time;
+            console.log(this.user_response[cookie].time);
         });
     }
 
