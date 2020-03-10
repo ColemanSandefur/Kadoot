@@ -18,6 +18,7 @@ import {SocketManager} from "./js_classes/socket-manager";
 import {DatabaseManager} from "./js_classes/database-manager";
 import {QuestionManager} from "./js_classes/question-manager";
 import { GameManager } from './js_classes/game-manager';
+import { UserManager } from './js_classes/user-manager';
 
 DatabaseManager.dbQuery("DELETE FROM users", []);
 
@@ -38,13 +39,11 @@ app.post("/", (req, res) => {
         return;
     }
     
-    DatabaseManager.createCookie(32).then((cookie) => {
-        res.cookie("user_id", cookie);
-        DatabaseManager.addCookie(cookie, username, game_id, false).then(() => {
-            GameManager.AddUser(cookie, username, game_id);
-            res.redirect("/game");
-        });
-    });
+    let cookie = UserManager.createCookie(32);
+    res.cookie("user_id", cookie);
+    UserManager.setUserData(cookie, game_id, false);
+    GameManager.AddUser(cookie, username, game_id);
+    res.redirect("/game");
 });
 
 app.get("/game", (req, res) => {
@@ -66,13 +65,11 @@ app.post("/game-creator", (req, res) => {
     let game_id = GameManager.createGameId();
     GameManager.createGame(game_id, question_id);
 
-    DatabaseManager.createCookie(32).then((cookie) => {
-        res.cookie("user_id", cookie);
-        DatabaseManager.addCookie(cookie, null, game_id, true).then(() => {
-            res.set("game_id", "" + game_id);
-            res.redirect("/admin-game");
-        });
-    });
+    let cookie = UserManager.createCookie(32);
+    res.cookie("user_id", cookie);
+    UserManager.setUserData(cookie, game_id, true);
+    res.set("game_id", "" + game_id);
+    res.redirect("/admin-game");
 });
 
 app.get("/admin-game", (req, res) => {
@@ -97,8 +94,8 @@ app.get("/quiz-creator", (req, res) => {
 
 app.post("/quiz-creator", (req, res) => {
     res.redirect("/game-creator");
-
-    QuestionManager.saveQuiz(req.body["quiz-name-input"], req.body["author-name-input"], req.body["game-data"]);
+    let dat = <[string, string[], number[]][]>JSON.parse(req.body["game-data"]);
+    QuestionManager.saveQuiz(req.body["quiz-name-input"], req.body["author-name-input"], dat);
 });
 
 io.on("connection", (socket) => {

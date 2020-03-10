@@ -1,6 +1,7 @@
 import {Game} from "./game";
 import socket_io = require("socket.io");
 import { DatabaseManager } from "./database-manager";
+import {UserManager} from "./user-manager";
 
 export class GameManager {
     private static games: Record<number, Game> = {};
@@ -26,27 +27,24 @@ export class GameManager {
             return;
         }
 
-        DatabaseManager.getCookieData(user_id).then((dat) => {
-            if (dat.length == 0){
-                return;
-            }
+        let data = UserManager.getUserData(user_id);
 
-            let data = dat[0];
+        if (data == null){
+            return;
+        }
 
-            let game_id: number = data.game_id;
-            let name: string = data.name;
-            let leader:boolean = data.leader;
+        let game_id: number = data.game_id;
+        let leader: boolean = data.leader;
 
-            if (GameManager.games[game_id] == null){
-                return;
-            }
+        if (GameManager.games[game_id] == null) {
+            return;
+        }
 
-            if (leader == true){
-                GameManager.games[game_id]?.setHost(socket);
-            } else {
-                GameManager.games[game_id]?.reconnectUser(socket)
-            }
-        });
+        if (leader == true) {
+            GameManager.games[game_id]?.setHost(socket);
+        } else {
+            GameManager.games[game_id]?.reconnectUser(socket)
+        }
     }
 
     private static getUserId(cookie: string): string{

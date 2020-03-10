@@ -155,7 +155,6 @@ export class Game {
     public finalResults(){
         let placing: {cookie: string, score: number, name: string}[] = [];
 
-        // let cur_place: number = Object.keys(this.user_data).length;
         for (let cur_cookie in this.user_data){
             placing.push({cookie: cur_cookie, score: this.user_data[cur_cookie].score, name: this.user_data[cur_cookie].name});
         }
@@ -217,11 +216,7 @@ export class Game {
             socket.emit("give-user-data", user_dat.name, user_dat.score);
         }
         socket.on("give-answer", (answer) => {
-            console.log(this.user_response);
             this.user_response[cookie] = {"response": <number>answer, "time": Date.now() - this.question_cur_time};
-            // this.user_response[cookie].response = <number>answer;
-            // this.user_response[cookie].time = Date.now() - this.question_cur_time;
-            console.log(this.user_response[cookie].time);
         });
     }
 

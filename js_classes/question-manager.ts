@@ -41,9 +41,7 @@ export class QuestionManager{
 
         for (let cookie in input){
             for (let i = 0; i < question[2].length; i++){
-                console.log(`their answer: ${input[cookie]}, correct answer: ${question[2][i]}`);
                 if (question[2][i] == input[cookie].response){
-                    console.log("correct");
                     output.push(cookie);
                     break;
                 }
@@ -55,14 +53,32 @@ export class QuestionManager{
 
     public static loadQuiz(quiz_id: number): Promise<QuestionManager> {
         return new Promise((res, rej) => {
-            DatabaseManager.dbQuery("SELECT * FROM quizes WHERE id=?", [quiz_id]).then((raw_dat) => {
+            DatabaseManager.dbQuery("SELECT * FROM quizzes WHERE id=?", [quiz_id]).then((raw_dat) => {
                 let dat = raw_dat[0];
 
                 let game_name = dat.game_name;
                 let author_name = dat.author_name;
-                let quiz: [string, string[], number[]][] = <[string, string[], number[]][]> JSON.parse(dat.questions)
 
-                res(new QuestionManager(author_name, game_name, quiz));
+                this.loadQuestions(quiz_id).then((questions) => {
+                    let quiz = questions;
+                    res(new QuestionManager(author_name, game_name, quiz));
+                });
+            });
+        });
+    }
+
+    private static loadQuestions(quiz_id: number): Promise<[string, string[], number[]][]> {
+        return new Promise((res, rej) => {
+            DatabaseManager.dbQuery("SELECT * FROM questions WHERE quiz_id=?", [quiz_id]).then((raw_dat) => {
+                let questions: [string, string[], number[]][] = [];
+    
+                for (let i = 0; i < raw_dat.length; i++){
+                    let question = raw_dat[i];
+    
+                    questions.push([question.question, JSON.parse(question.choices), JSON.parse(question.answers)]);
+                }
+    
+                res(questions);
             });
         });
     }
@@ -70,15 +86,22 @@ export class QuestionManager{
     public static searchQuiz(query: string): Promise<RowPacket[]> {
         return new Promise((res, rej) => {
             let data = this.makeRegex(query);
-            DatabaseManager.dbQuery("SELECT * FROM quizes WHERE id LIKE ? AND game_name LIKE ?", [data[0], data[1]]).then((data) => {
+            DatabaseManager.dbQuery("SELECT * FROM quizzes WHERE id LIKE ? AND game_name LIKE ?", [data[0], data[1]]).then((data) => {
                 res(data);
             });
         });
     }
 
-    public static saveQuiz(game_name: string, author_name: string, questions: string) {
-        // let jString = JSON.stringify(questions);
-        DatabaseManager.dbQuery("INSERT INTO quizes (game_name, author_name, questions) VALUES (?, ?, ?)", [game_name, author_name, questions]);
+    public static saveQuiz(game_name: string, author_name: string, questions: [string, string[], number[]][]) {
+
+        DatabaseManager.dbQuery("INSERT INTO quizzes (game_name, author_name) VALUES (?, ?)", [game_name, author_name]).then((data) => {
+            let quiz_id = (<any>data).insertId;
+
+            for (let i = 0; i < questions.length; i++){
+                let question = questions[i];
+                DatabaseManager.dbQuery("INSERT INTO questions (quiz_id, question, choices, answers) VALUES (?, ?, ?, ?)", [quiz_id, question[0], JSON.stringify(question[1]), JSON.stringify(question[2])]);
+            }
+        })
     }
 
     private static makeRegex(query: string) {
