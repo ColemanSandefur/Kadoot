@@ -35,7 +35,7 @@
 
             socket.emit("start-game");
 
-            let colors = ["green", "red", "yellow", "blue"];
+            let colors = ["green", "red", "purple", "blue"];
 
             for (let i = 0; i < 4; i++){
                 $(`#id${i}`).removeClass().addClass(`grid-button ${colors[i]} hidden`);

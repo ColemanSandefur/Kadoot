@@ -25,7 +25,7 @@
             socket = io();
 
             socket.on("new-question", (num_questions) => {
-                let colors = ["green", "red", "yellow", "blue"];
+                let colors = ["green", "red", "purple", "blue"];
                 $("div#content").html("");
                 $("div#content").removeClass();
                 $("div#content").addClass("grid-container");
