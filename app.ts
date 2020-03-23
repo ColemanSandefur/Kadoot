@@ -22,6 +22,7 @@ import { GameManager } from './js_classes/game-manager';
 import { UserManager } from './js_classes/user-manager';
 import { LinkManager } from "./js_classes/link-manager";
 
+DatabaseManager.initializeDatabase();
 
 server.listen(3000, () => {
     console.log("Listening on port *3000");

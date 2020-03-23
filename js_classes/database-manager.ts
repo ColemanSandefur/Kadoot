@@ -4,19 +4,34 @@ import { QuestionManager } from "./question-manager";
 var con = mysql.createConnection({
     host: "localhost",
     user: "root",
-    password: "",
-    database: "kadoot_data"
+    password: ""
 });
 
 con.connect((err) => {
-    if (err) throw err;
-    console.log("Connected to the database!");
+    if (err) {
+        throw err
+    };
+    
+    console.log("Connected to the database server!");
 });
 
 export class DatabaseManager{
     private static con = con;
 
-    static dbQuery(query: string, data: any[]): Promise<RowPacket[]> {
+    static initializeDatabase() {
+        this.dbQuery("CREATE DATABASE IF NOT EXISTS kadoot_data").then(() => {
+
+            con.changeUser({database: "kadoot_data"}, (err) => {
+                if (err) throw err;
+                this.dbQuery("CREATE TABLE IF NOT EXISTS `questions` (`id` int NOT NULL AUTO_INCREMENT,`quiz_id` int DEFAULT NULL,`question_number` int DEFAULT NULL,`question` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,`choices` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,`answers` varchar(9) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,UNIQUE KEY `id` (`id`)) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+                this.dbQuery("CREATE TABLE IF NOT EXISTS `quizzes` (`id` int NOT NULL AUTO_INCREMENT,`game_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,`author_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,UNIQUE KEY `id` (`id`)) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+                console.log("connected to the kadoot_data database");
+            });
+            
+        });
+    }
+
+    static dbQuery(query: string, data?: any[]): Promise<RowPacket[]> {
         return new Promise(function (res, rej) {
             DatabaseManager.con.query(query, data, function (err, result) {
                 if (err) rej(err);

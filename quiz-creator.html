@@ -114,7 +114,11 @@
                         let id = $(this).parent().attr("id").substring("button".length);
                         
                         cur_question.choices.splice(id, 1);
-                        for (let j = 0; j < cur_question.answers; j++){
+
+                        console.log(id);
+                        console.log(cur_question.answers);
+
+                        for (let j = 0; j < cur_question.answers.length; j++){
                             if (cur_question.answers[j] == id){
                                 cur_question.answers.splice(j, 1);
                                 j--;
@@ -122,6 +126,7 @@
                                 cur_question.answers[j]--;
                             }
                         }
+
                         reloadButtons();
                     });
 
