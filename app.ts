@@ -10,7 +10,8 @@ const io = socket_io(server);
 
 //Adding directories
 app.use(express.static(__dirname + "/public"));
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, "static")));
 
 //Import my classes
@@ -19,8 +20,8 @@ import {DatabaseManager} from "./js_classes/database-manager";
 import {QuestionManager} from "./js_classes/question-manager";
 import { GameManager } from './js_classes/game-manager';
 import { UserManager } from './js_classes/user-manager';
+import { LinkManager } from "./js_classes/link-manager";
 
-DatabaseManager.dbQuery("DELETE FROM users", []);
 
 server.listen(3000, () => {
     console.log("Listening on port *3000");
@@ -97,6 +98,59 @@ app.post("/quiz-creator", (req, res) => {
     let dat = <[string, string[], number[]][]>JSON.parse(req.body["game-data"]);
     QuestionManager.saveQuiz(req.body["quiz-name-input"], req.body["author-name-input"], dat);
 });
+
+app.post("/remote-game-creator", (req, res) => {
+    let question_id = req.body.question_id;
+    
+    if (question_id == null || question_id + "".trim().length == 0){
+        res.send("error");
+        return;
+    }
+
+    let game_id = GameManager.createGameId();
+    GameManager.createGame(game_id, question_id);
+    
+    let admin_link = LinkManager.createNewLink(game_id, true, true);
+
+    res.send(JSON.stringify([`localhost:3000/admin-game/${admin_link}`, `localhost:3000/${game_id}`]));
+});
+
+app.get("/admin-game/:oneTimeCode", (req, res) => {
+    let oneTimeCode = req.params["oneTimeCode"];
+
+    let linkData = LinkManager.getLinkData(oneTimeCode);
+
+    if (linkData == null){
+        res.redirect("/");
+        return;
+    } else if (linkData.host == false) {
+        console.log("not host");
+        res.redirect("/");
+        return;
+    }
+
+    let game_id = linkData.game_id;
+
+    let cookie = UserManager.createCookie(32);
+    res.cookie("user_id", cookie);
+    UserManager.setUserData(cookie, game_id, true);
+    res.set("game_id", "" + game_id);
+    res.redirect("/admin-game");
+
+    if (linkData.oneTime) {
+        LinkManager.deleteLink(oneTimeCode);
+    } else {
+        sleep(3600000).then(() => {
+            LinkManager.deleteLink(oneTimeCode);
+        });
+    }
+});
+
+function sleep(ms: number) {
+    return new Promise((res, rej) => {
+        setTimeout(res, ms);
+    });
+}
 
 io.on("connection", (socket) => {
     SocketManager.addListeners(socket);

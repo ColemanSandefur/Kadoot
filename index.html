@@ -13,9 +13,17 @@
         <form action="/" method="post">
             <h1 class="title">Kadoot</h1>
             <input type="text" placeholder="name" name="username"><br>
-            <input type="text" placeholder="game id" name="game_id"><br>
+            <input type="text" placeholder="game id" id="game_id" name="game_id"><br>
             <button type="submit">Submit</button>
         </form>
     </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(() => {
+            if (window.location.href.lastIndexOf("/") != window.location.href.length - 1)
+                $("#game_id").val(window.location.href.substring(window.location.href.lastIndexOf("/") + 1));
+        });
+    </script>
 </body>
 </html>
