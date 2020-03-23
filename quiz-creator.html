@@ -10,7 +10,7 @@
     <table cellspacing="0" cellpadding="0" style="height: 100%; width: 100%; border:none">
         <tr>
             <td class="top-bar">
-                <input type="text" id="quiz-name-input" name="quiz-name-input" placeholder="Quiz Name"><input type="text" id="author-name-input" name="author-name-input" placeholder="Author Name"><div class="create-button"><div>create</div></div>
+                <input type="text" id="quiz-name-input" name="quiz-name-input" placeholder="Quiz Name" maxlength="128"><input type="text" id="author-name-input" name="author-name-input" placeholder="Author Name" maxlength="64"><div class="create-button"><div>create</div></div>
 
             </td>
         </tr>
@@ -21,7 +21,7 @@
                 <div class="main-content">
                     <table style="height: 100%; width: 100%; padding: 0; margin: 0;">
                         <tr style="height: 4rem; width: 100%; font-size: 2rem;">
-                            <td style="padding: .5rem;"><input type="text" placeholder="Question" name="question-input" id="question-input" style="visibility: hidden;"></td>
+                            <td style="padding: .5rem;"><input type="text" placeholder="Question" name="question-input" id="question-input" style="visibility: hidden;" maxlength="256"></td>
                         </tr>
                         <tr>
                             <td>
@@ -85,11 +85,11 @@
                 for (let i = 0; i < cur_question.choices.length; i++) {
                     let button = $(`<div class="button ${colors[i]}" id="button${i}"></div>`);
 
-                    let input = $(`<input id="input${i}">`);
+                    let input = $(`<input id="input${i}" maxlength="60">`);
                     let close_button = $(`<div class="button exit-button"><div>x</div></div>`);
                     let answer_button = $(`<div class="button answer-button"><div>answer</div></div>`);
 
-                    input.val(cur_question.choices[i]);
+                    input.val((cur_question.choices[i]));
                     
                     for (let j = 0; j < cur_question.answers.length; j++){
                         if (cur_question.answers[j] == i){
@@ -179,7 +179,7 @@
                 side_bar.html("");
 
                 for (let i = 0; i < questions.length; i++){
-                    let button = $(`<div id="question${i}">${questions[i].question}</div>`);
+                    let button = $(`<div id="question${i}">${clean(questions[i].question)}</div>`);
                     let close_button = $(`<div class="exit-question-button">x</div>`);
 
                     close_button.click(function() {
@@ -193,7 +193,6 @@
                         }
                         reloadQuestions();
                         reloadButtons();
-                        
                     });
 
                     button.append(close_button);
@@ -224,7 +223,6 @@
                     let cur_question = questions[i];
                     data.push([cur_question.question, cur_question.choices, cur_question.answers]);
                 }
-                console.log();
                 return data;
             }
 
@@ -246,6 +244,35 @@
                 form.submit();
             });
         });
+
+        function clean(msg){ //Cleanse the message from potentially hazardous characters
+
+            for (var i = 0; i < msg.length; i++){
+                if (msg.charAt(i) == "&"){
+                    var first = msg.substring(0, i);
+                    var last = msg.substring(i + 1);
+                    msg = first + "&amp" + last;
+                }
+            }
+
+            while (msg.indexOf('"') > -1) {
+                
+            }
+
+            while (msg.indexOf("<") > -1) {
+                msg = msg.replace("<", "&lt;");
+            }
+
+            while (msg.indexOf(">") > -1) {
+                msg = msg.replace(">", "&gt;");
+            }
+
+            while (msg.indexOf("\\") > -1){
+                msg = msg.replace("\\", "&bsol");
+            }
+
+            return msg;
+        }
     </script>
 </body>
 </html>

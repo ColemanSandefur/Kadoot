@@ -36,8 +36,8 @@ app.get("/id=:id", (req, res) => {
 });
 
 app.post("/", (req, res) => {
-    let username = <string>req.body.username;
-    let game_id = req.body.game_id;
+    let username = (<string>req.body.username).substr(0, 32);
+    let game_id = Number.parseInt((<string>req.body.game_id).substr(0, 8));
 
     if (username == null || username.trim().length == 0 || game_id == null || game_id +"".trim.length == 0){
         res.redirect("/");

@@ -1,4 +1,5 @@
 import {DatabaseManager, RowPacket} from "./database-manager";
+import { stringify } from "querystring";
 
 export interface Question {
     question: string;
@@ -93,12 +94,25 @@ export class QuestionManager{
     }
 
     public static saveQuiz(game_name: string, author_name: string, questions: [string, string[], number[]][]) {
-
+        if (game_name.length > 128) {
+            game_name = game_name.substr(0, 128);
+        }
+        if (author_name.length > 64) {
+            author_name = author_name.substr(0, 64);
+        }
         DatabaseManager.dbQuery("INSERT INTO quizzes (game_name, author_name) VALUES (?, ?)", [game_name, author_name]).then((data) => {
             let quiz_id = (<any>data).insertId;
 
             for (let i = 0; i < questions.length; i++){
                 let question = questions[i];
+                if (question[0].length > 256) {
+                    question[0] = question[0].substr(0, 256);
+                }
+                for (let i = 0; i < question[1].length; i++){
+                    if (question[1][i].length > 60){
+                        question[1][i] = question[1][i].substr(0, 60);
+                    }
+                }
                 DatabaseManager.dbQuery("INSERT INTO questions (quiz_id, question, choices, answers) VALUES (?, ?, ?, ?)", [quiz_id, question[0], JSON.stringify(question[1]), JSON.stringify(question[2])]);
             }
         })
@@ -135,3 +149,4 @@ export class QuestionManager{
         return [id, name];
     }
 }
+

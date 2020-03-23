@@ -45,14 +45,14 @@
             
 
             socket.on("new-question-info", (question, choices) => {
-                $("#question").html(question);
+                $("#question").html(clean(question));
                 $("#content").html("").removeClass().addClass("button-holder");
                 $("#content").css("visibility", "visible");
                 
 
                 for (var i = 0; i < 4; i++){
                     if (i < choices.length){
-                        $(`#content`).append($(`<div class="grid-button ${colors[i]}" id="id${i}">${choices[i]}</div>`));
+                        $(`#content`).append($(`<div class="grid-button ${colors[i]}" id="id${i}">${clean(choices[i])}</div>`));
                     }else {
                         $(`#content`).append($(`<div class="grid-button hidden" id="id${i}"></div>`));
                     }
@@ -63,10 +63,11 @@
                 //1st 3 places
                 //scores = scores[]
                 //names = names[]
+
                 $("#question").html("");
                 $("#content").html(`<div style="width: 100%; height: 100%; overflow-y: scroll;"><ol class="place-screen" type="1"></ol></div>`).removeClass();
                 for (let i = 0; i < scores.length; i++){
-                    $(".place-screen").append(`<li>${names[i]}<span style="margin-left: 2rem;">${scores[i]}</span></li>`);
+                    $(".place-screen").append(`<li>${clean(names[i])}<span style="margin-left: 2rem;">${scores[i]}</span></li>`);
                 }
                 $(".question-info").html("<h1>Results</h1>");
             });
@@ -108,6 +109,35 @@
                 socket.emit("next-question");
             });
         });
+
+        function clean(msg){ //Cleanse the message from potentially hazardous characters
+
+            for (var i = 0; i < msg.length; i++){
+                if (msg.charAt(i) == "&"){
+                    var first = msg.substring(0, i);
+                    var last = msg.substring(i + 1);
+                    msg = first + "&amp" + last;
+                }
+            }
+
+            while (msg.indexOf('"') > -1) {
+                
+            }
+
+            while (msg.indexOf("<") > -1) {
+                msg = msg.replace("<", "&lt;");
+            }
+
+            while (msg.indexOf(">") > -1) {
+                msg = msg.replace(">", "&gt;");
+            }
+
+            while (msg.indexOf("\\") > -1){
+                msg = msg.replace("\\", "&bsol");
+            }
+
+            return msg;
+        }
     </script>
 </body>
 </html>

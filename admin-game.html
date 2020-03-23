@@ -28,6 +28,8 @@
             });
 
             socket.on("user-connected", (name, id) => {
+                name = clean(name);
+                console.log(name);
                 let div = $(`<div id="user${id}">${name}</div>`);
                 $(".players").append(div);
 
@@ -43,6 +45,36 @@
                 form.submit();
             });
         });
+
+        function clean(msg){ //Cleanse the message from potentially hazardous characters
+
+            for (var i = 0; i < msg.length; i++){
+                if (msg.charAt(i) == "&"){
+                    var first = msg.substring(0, i);
+                    var last = msg.substring(i + 1);
+                    msg = first + "&amp" + last;
+                }
+            }
+
+
+            while (msg.indexOf('"') > -1) {
+                
+            }
+
+            while (msg.indexOf("<") > -1) {
+                msg = msg.replace("<", "&lt;");
+            }
+
+            while (msg.indexOf(">") > -1) {
+                msg = msg.replace(">", "&gt;");
+            }
+
+            while (msg.indexOf("\\") > -1){
+                msg = msg.replace("\\", "&bsol");
+            }
+
+            return msg;
+        }
     </script>
 </body>
 </html>

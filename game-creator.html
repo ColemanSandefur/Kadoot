@@ -40,7 +40,7 @@
         function formatData(dat){
             $("#games").html("");
             for (let i = 0; i < dat.length; i++){
-                let game_name = dat[i][0];
+                let game_name = clean(dat[i][0]);
                 let game_id = dat[i][1];
 
                 let list = $(`<li>${game_name}</li>`);
@@ -56,6 +56,35 @@
                     form.submit();
                 });
             }
+        }
+
+        function clean(msg){ //Cleanse the message from potentially hazardous characters
+
+            for (var i = 0; i < msg.length; i++){
+                if (msg.charAt(i) == "&"){
+                    var first = msg.substring(0, i);
+                    var last = msg.substring(i + 1);
+                    msg = first + "&amp" + last;
+                }
+            }
+
+            while (msg.indexOf('"') > -1) {
+                
+            }
+
+            while (msg.indexOf("<") > -1) {
+                msg = msg.replace("<", "&lt;");
+            }
+
+            while (msg.indexOf(">") > -1) {
+                msg = msg.replace(">", "&gt;");
+            }
+
+            while (msg.indexOf("\\") > -1){
+                msg = msg.replace("\\", "&bsol");
+            }
+
+            return msg;
         }
     </script>
 </body>
