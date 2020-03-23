@@ -31,6 +31,10 @@ app.get("/", (req, res) => {
     res.sendFile(__dirname + "/index.html");
 });
 
+app.get("/id=:id", (req, res) => {
+    res.sendFile(__dirname + "/index.html");
+});
+
 app.post("/", (req, res) => {
     let username = <string>req.body.username;
     let game_id = req.body.game_id;
@@ -112,7 +116,7 @@ app.post("/remote-game-creator", (req, res) => {
     
     let admin_link = LinkManager.createNewLink(game_id, true, true);
 
-    res.send(JSON.stringify([`localhost:3000/admin-game/${admin_link}`, `localhost:3000/${game_id}`]));
+    res.send(JSON.stringify([`localhost:3000/admin-game/${admin_link}`, `localhost:3000/id=${game_id}`]));
 });
 
 app.get("/admin-game/:oneTimeCode", (req, res) => {

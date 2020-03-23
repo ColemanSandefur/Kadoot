@@ -22,7 +22,7 @@
     <script>
         $(() => {
             if (window.location.href.lastIndexOf("/") != window.location.href.length - 1)
-                $("#game_id").val(window.location.href.substring(window.location.href.lastIndexOf("/") + 1));
+                $("#game_id").val(window.location.href.substring(window.location.href.lastIndexOf("/id=") + 4));
         });
     </script>
 </body>
