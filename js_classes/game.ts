@@ -87,6 +87,10 @@ export class Game {
         }
         this.user_response = {};
 
+        if (this.quiz.getCurQuestion() == null){
+            return ;
+        }
+        
         let question = this.quiz.getCurQuestion()[0];
         let choices = this.quiz.getCurQuestion()[1];
         let answerIndex = this.quiz.getCurQuestion()[2];

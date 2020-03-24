@@ -2,6 +2,10 @@ $mainColor: #0f4c75;
 $accentColor: #1b262c;
 $borderRadius: 10px;
 
+html {
+    min-height: 100vh;
+}
+
 * {
     font-family: "Roboto", sans-serif;
     color: white;
@@ -29,7 +33,9 @@ body {
     input {
         height: 3rem;
         margin: .5rem;
-        width: 30rem;
+        width: 45%;
+        max-width: 30rem;
+        min-width: 15rem;
         background-color: $accentColor;
         border: none;
         border-radius: $borderRadius;
@@ -48,12 +54,15 @@ body {
         align-items: center;
         background-color: $mainColor;
         line-height: 3rem;
-        position: absolute;
-        right: .5rem;
-        top: .5rem;
         border: none;
         border-radius: $borderRadius;
         cursor: pointer;
+        float: right;
+        margin: {
+            right: .5rem;
+            top: .5rem;
+            bottom: .5rem;
+        }
     }
 }
 
@@ -89,6 +98,7 @@ body {
         align-items: center;
         user-select: none;
         position: relative;
+        overflow: hidden;
 
         &.add-question{
             div {

@@ -16,6 +16,7 @@ body {
     height: 100vh;
     font-family: "Roboto", sans-serif;
     background-color: #0f4c75;
+    min-width: 450px;
 }
 
 table {
@@ -29,6 +30,8 @@ td {
 
 #question {
     font-size: 2rem;
+    word-break: break-all;
+    word-break: break-word;
 }
 
 .question-info {
@@ -45,7 +48,7 @@ td {
     
     visibility: visible;
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: 50% 50%;
     height:100%;
     width: 100%;
 }
@@ -69,6 +72,8 @@ td {
     font-size: 2rem;
     text-align: center;
     color: white;
+    word-break: break-all;
+    word-break: break-word;
 
     &.hidden {
         visibility: hidden;

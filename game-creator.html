@@ -42,8 +42,13 @@
             for (let i = 0; i < dat.length; i++){
                 let game_name = clean(dat[i][0]);
                 let game_id = dat[i][1];
+                
+                let list = $(`<li><p>${game_name}</p></li>`);
 
-                let list = $(`<li>${game_name}</li>`);
+                if (game_name.length == 0){
+                    list = $("<li><p><i>undefined<i></p></li>");
+                }
+
                 let span = $(`<span class="create-game" id="gameId=${game_id};"><p>create</p></span>`);
                 $(list).append(span);
                 $("#games").append(list);

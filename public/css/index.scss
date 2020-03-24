@@ -32,6 +32,7 @@ body {
             height: 2rem;
             padding: 0 5px;
             font-size: 1.5rem;
+            min-width: 20rem;
             background-color: #1b262c;
             color: white;
         }
@@ -43,6 +44,7 @@ body {
             font-size: 1.5rem;
             background-color: #1b262c;
             color: white;
+            min-width: 6;
 
             &:hover{
                 cursor: pointer;

@@ -41,9 +41,6 @@
                 $(`#id${i}`).removeClass().addClass(`grid-button ${colors[i]} hidden`);
             }
 
-            // $("#content").html(`<div style="text-align: center; height: 100%; width: 100%;"><div class="place third"><p style="position: inline-block; padding: 0; margin: 0">Bob</p><p style="position: inline-block; padding: 0; margin: 0">1330</p></div><div class="place first"></div><div class="place second"></div></div>`).removeClass().addClass("place-screen");
-            
-
             socket.on("new-question-info", (question, choices) => {
                 $("#question").html(clean(question));
                 $("#content").html("").removeClass().addClass("button-holder");
