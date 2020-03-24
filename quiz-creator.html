@@ -115,9 +115,6 @@
                         
                         cur_question.choices.splice(id, 1);
 
-                        console.log(id);
-                        console.log(cur_question.answers);
-
                         for (let j = 0; j < cur_question.answers.length; j++){
                             if (cur_question.answers[j] == id){
                                 cur_question.answers.splice(j, 1);
@@ -165,8 +162,6 @@
                 }
             }
 
-            // reloadButtons();
-
             function addQuestionButton(parent){
                 let add_button = $(`<div class="add-question"><div>+</div></div>`);
                 parent.append(add_button);
@@ -190,12 +185,15 @@
                     close_button.click(function() {
                         let id = button.attr("id").substring("question".length);
                         questions.splice(id, 1);
-                        if (cur_question_index == id){
+
+                        if (cur_question_index >= id) {
                             cur_question_index--;
                         }
+
                         if (questions.length > 0 && cur_question_index < 0){
                             cur_question_index = 0;
                         }
+
                         reloadQuestions();
                         reloadButtons();
                     });
@@ -234,10 +232,8 @@
             $(".create-button").click(() => {
                 let quiz_name = $("#quiz-name-input");
                 let author_name = $("#author-name-input");
-                console.log(reformatForStreaming());
                 let form = $(`<form method="POST" action="/quiz-creator" style="visibility: hidden"></form>`);
                 let input = $(`<input name="game-data" id="game-data">`);
-                console.log(reformatForStreaming());
                 input.val(JSON.stringify(reformatForStreaming()));
 
                 form.append(quiz_name);

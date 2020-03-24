@@ -105,9 +105,19 @@ export class QuestionManager{
 
             for (let i = 0; i < questions.length; i++){
                 let question = questions[i];
+                
                 if (question[0].length > 256) {
                     question[0] = question[0].substr(0, 256);
                 }
+
+                console.log(question[1]);
+
+                if (question[1].length > 4) {
+                    question[1].splice(4);
+                }
+
+                console.log(question[1]);
+
                 for (let i = 0; i < question[1].length; i++){
                     if (question[1][i].length > 60){
                         question[1][i] = question[1][i].substr(0, 60);
