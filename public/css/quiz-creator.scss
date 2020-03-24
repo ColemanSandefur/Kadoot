@@ -29,18 +29,25 @@ body {
     padding: 0;
     margin: 0;
     user-select: none;
+    word-break: keep-all;
 
-    input {
-        height: 3rem;
-        margin: .5rem;
-        width: 45%;
-        max-width: 30rem;
-        min-width: 15rem;
-        background-color: $accentColor;
-        border: none;
-        border-radius: $borderRadius;
-        font-size: 2rem;
+    div.inputs {
+        input {
+            height: 3rem;
+            margin: .5rem;
+            width: 40%;
+            min-width: 12rem;
+            resize: horizontal;
+            background-color: $accentColor;
+            border: none;
+            border-radius: $borderRadius;
+            font-size: 2rem;
+        }
+        display:inline-block;
+        // margin-right: 12rem;
+        width: calc(100% - 9rem);
     }
+    
 
     .create-button {
         padding: 0 {
