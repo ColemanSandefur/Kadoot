@@ -7,38 +7,6 @@
     <title>Quiz Creator</title>
 </head>
 <body>
-    <!-- <table cellspacing="0" cellpadding="0" style="height: 100vh; width: 100vw; max-height: 100vh; border:none">
-        <thead>
-            <tr>
-                <th class="top-bar">
-                    <input type="text" id="quiz-name-input" name="quiz-name-input" placeholder="Quiz Name" maxlength="128"><input type="text" id="author-name-input" name="author-name-input" placeholder="Author Name" maxlength="64"><div class="create-button"><div>create</div></div>
-    
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr>
-                <td class="content">
-                    <div class="side-bar">
-                    </div>
-                    <div class="main-content">
-                        <table style="height: 100%; width: 100%; padding: 0; margin: 0;">
-                            <tr style="height: 4rem; width: 100%; font-size: 2rem;">
-                                <td style="padding: .5rem;"><input type="text" placeholder="Question" name="question-input" id="question-input" style="visibility: hidden;" maxlength="256"></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="button-holder"></div>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-        
-    </table> -->
-    
     <div id="big-container" style="display:grid; grid-template-columns: 100%; grid-template-rows: 4rem auto; height: 100vh; width: 100vw;">
         <div class="top-bar">
             <div class="inputs">
@@ -307,19 +275,18 @@
         }
 
         function changedWindowSize() {
-            console.log($("html").width(), $("html").height());
-
-
             if ($("html").width() < 565) {
                 $("#big-container").css("grid-template-rows", "8rem auto");
-                $(".inputs").children().css("width", "100%");
+                $(".inputs").children().addClass("mini-screen");
+                $(".content").addClass("mini-screen");
             } else {
                 $("#big-container").css("grid-template-rows", "4rem auto");
-                $(".inputs").children().css("width", "40%");
+                $(".inputs").children().removeClass("mini-screen");
+                $(".content").removeClass("mini-screen");
             }
         }
 
-        window.onresize = reportWindowSize;
+        window.onresize = changedWindowSize;
     </script>
 </body>
 </html>
