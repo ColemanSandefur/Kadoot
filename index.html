@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" screen-size="large">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/index.css">
@@ -12,8 +13,8 @@
     <div class="form-holder">
         <form action="/" method="post">
             <h1 class="title">Kadoot</h1>
-            <input type="text" placeholder="name" name="username" maxlength="32"><br>
-            <input type="text" placeholder="game id" id="game_id" name="game_id" maxlength="8"><br>
+            <input size="1" type="text" placeholder="name" name="username" maxlength="32"><br>
+            <input size="1" type="text" placeholder="game id" id="game_id" name="game_id" maxlength="8"><br>
             <button type="submit">Submit</button>
         </form>
     </div>
@@ -21,9 +22,24 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
         $(() => {
-            if (window.location.href.lastIndexOf("/") != window.location.href.length - 1)
+            if (window.location.href.lastIndexOf("/") != window.location.href.length - 1) {
                 $("#game_id").val(window.location.href.substring(window.location.href.lastIndexOf("/id=") + 4));
+            }
+
+            function changedWindowSize() {
+                if ($("html").width() < 565) {
+                    $("html").attr("screen-size", "small");
+                } else {
+                    $("html").attr("screen-size", "large");
+                }
+            }
+
+            window.onresize = changedWindowSize;
+
+            changedWindowSize();
         });
+
+        
     </script>
 </body>
 </html>

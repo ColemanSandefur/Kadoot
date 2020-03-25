@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" screen-size="large">
 <head>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="css/game.css">
@@ -7,7 +7,7 @@
 </head>
 <body>
     <table>
-        <tr style="height: 3rem;"><td><h1><span id="username" style="margin-left: .5rem;"></span> <span style="position: absolute; right: .5rem;" id="score"></span></h1></td></tr>
+        <tr class="top-bar" ><td><h1><span id="username" style="margin-left: .5rem;"></span> <span style="position: absolute; right: .5rem;" id="score"></span></h1></td></tr>
         <tr>
             <td>
                 <div class="grid-container" id="content"></div>
@@ -67,7 +67,8 @@
             });
 
             socket.on("final-score", (place, score) => {
-                $("div#content").html(`<div style="text-align: center;"><h1 style="font-size: 3rem;">you placed</h1><h1 style="font-size: 4rem;">${place}</h1></div>`);
+                $("div#content").html(`<div class="placing"><h1>you placed</h1><h1 class="place-number">${place}</h1></div>`);
+                $("div#content").removeClass().addClass("result true");
             });
 
             socket.on("kicked", () => {
@@ -75,8 +76,6 @@
             });
 
             $("div#content").html("waiting for question to start").removeClass().addClass("result rainbow");
-
-
         });
 
         function clean(msg){ //Cleanse the message from potentially hazardous characters

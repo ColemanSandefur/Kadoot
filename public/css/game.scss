@@ -1,3 +1,5 @@
+$fontSize: 3rem;
+
 body {
     margin: 0;
     padding: 0;
@@ -77,7 +79,7 @@ table {
     justify-items: center;
     align-items: center;
     color: white;
-    font-size: 2rem;
+    font-size: $fontSize;
 
     &.true{
         background-color: green;
@@ -91,6 +93,23 @@ table {
 td {
     padding: 0;
     margin: 0;
+}
+
+.top-bar {
+    height: $fontSize + 1rem;
+    font-size: $fontSize;
+}
+
+.placing {
+    text-align: center;
+
+    h1 {
+        font-size: $fontSize + 1rem
+    }
+
+    .place-number {
+        font-size: $fontSize + 2rem;
+    }
 }
 
 @keyframes rainbow {

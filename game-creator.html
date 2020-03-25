@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" screen-size="large">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="css/game-creator.css">
     <title>Create Game</title>
 </head>
 <body>
     <div class="title-bar">
-        <p>search games <input type="text" class="search-bar"></p>
+        <p>search games </p>
+        <input size="1" type="text" class="search-bar">
     </div>
     <div class="content">
         <ul id="games">
@@ -35,6 +37,8 @@
                     formatData(dat);
                 });
             });
+
+            changedWindowSize();
         });
 
         function formatData(dat){
@@ -91,6 +95,16 @@
 
             return msg;
         }
+
+        function changedWindowSize() {
+            if ($("html").width() < 565) {
+                $("html").attr("screen-size", "small");
+            } else {
+                $("html").attr("screen-size", "large");
+            }
+        }
+
+        window.onresize = changedWindowSize;
     </script>
 </body>
 </html>

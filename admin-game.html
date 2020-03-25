@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" screen-size="">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/admin-game.css">
     <title>Kadoot</title>
 </head>
 <body>
     <div class="top-bar">
-        <p style="font-size: 3rem; padding: 0; margin: 0; margin-bottom: .5rem;">Game Code:</p>
-        <p class="game-id"></p><p id="start-game" class="button-accept" >start</p>
+        <p style="font-size: 2rem; padding: 0; margin: 0; margin-bottom: .5rem;">Game Code:</p>
+        <p class="game-id"></p>
+        <p id="start-game" class="button-accept" >start</p>
     </div>
 
     <div class="players"></div>
@@ -74,6 +76,18 @@
 
             return msg;
         }
+
+        function changedWindowSize() {
+            if ($("html").width() < 565) {
+                $("html").attr("screen-size", "small");
+            } else {
+                $("html").attr("screen-size", "large");
+            }
+        }
+
+        window.onresize = changedWindowSize;
+
+        changedWindowSize();
     </script>
 </body>
 </html>
