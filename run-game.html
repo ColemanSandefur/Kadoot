@@ -75,8 +75,6 @@
                     responses[i] = 0;
                 }
 
-                console.log(user_response);
-
                 for (let i = 0; i < user_response.length; i++){
                     if (responses[user_response[i]] == null){
                         responses[user_response[i]] = 1;
@@ -88,9 +86,7 @@
                 $("#content").html(`<table id="" style="height: 100%; width: 100%;"><tr id="graph-holder" style="vertical-align: bottom;"><td><div style="text-align: center; height: 100%;" id="graph-centerer"></div></td></tr><tr><td id="bottom-bar" style="height: 3rem"></td></tr></table>`).removeClass().addClass("table-holder");
                 let i = -1;
                 let num_responses = Object.keys(user_response).length;
-                console.log(responses);
                 for (let key in (responses)){
-                    console.log(responses[key]);
                     if (responses[key] == 0){
                         $("#graph-centerer").append(`<div class="percentage-0 ${colors[key]}" id="question${key}">${responses[key]}</div>`);    
                     } else {

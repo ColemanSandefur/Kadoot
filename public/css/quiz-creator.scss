@@ -47,17 +47,19 @@ body {
                 width: 100%;
             }
         }
+
         display:inline-block;
-        // margin-right: 12rem;
         width: calc(100% - 9rem);
     }
-    
+
 
     .create-button {
         padding: 0 {
             right: 1rem;
             left: 1rem;
-        };
+        }
+
+        ;
         font-size: 2rem;
         margin: 0;
         display: grid;
@@ -69,6 +71,7 @@ body {
         border-radius: $borderRadius;
         cursor: pointer;
         float: right;
+
         margin: {
             right: .5rem;
             top: .5rem;
@@ -77,44 +80,58 @@ body {
     }
 }
 
-.content {
-    width: 100%;
-    // height: 100%;
-    overflow-y: hidden;
-    display: grid;
-    grid-template-columns: 16rem auto;
-    padding: 0;
-    margin: 0;
-    background-color: $mainColor;
 
-    &.mini-screen {
+
+html[screen-size="small"] {
+    .top-bar {
+        div.inputs {
+            input {
+                width: 100%;
+            }
+        }
+    }
+
+    #big-container {
+        grid-template-rows: 8rem auto;
+    }
+
+    .content {
         grid-template-columns: 100%;
         grid-template-rows: 7rem auto;
 
-        .side-bar div {
-            height: 5rem;
-            .exit-question-button {
-                height: 5rem;
-                width: 2rem;
-                margin: 0;
-            }
+        .side-bar {
+            border: solid;
+            border-width: 2px;
+            border-color: #223038;
+            border-bottom-left-radius: $borderRadius;
+            border-bottom-right-radius: $borderRadius;
 
-            &.add-question {
-                div {
-                    height: 2rem;
+            div {
+                height: 5rem;
+
+                .exit-question-button {
+                    height: 5rem;
                     width: 2rem;
+                    margin: 0;
+                }
+
+                &.add-question {
+                    div {
+                        height: 2rem;
+                        width: 2rem;
+                    }
                 }
             }
         }
 
-        .button-holder{
+        .button-holder {
             .button {
                 margin: .1rem;
 
                 .exit-button {
                     margin: .1rem;
                 }
-                
+
                 .answer-button {
                     margin: .1rem;
                 }
@@ -125,14 +142,69 @@ body {
                 }
             }
         }
+
+        &.mini-screen {
+            grid-template-columns: 100%;
+            grid-template-rows: 7rem auto;
+    
+            .side-bar div {
+                height: 5rem;
+                .exit-question-button {
+                    height: 5rem;
+                    width: 2rem;
+                    margin: 0;
+                }
+    
+                &.add-question {
+                    div {
+                        height: 2rem;
+                        width: 2rem;
+                    }
+                }
+            }
+    
+            .button-holder{
+                .button {
+                    margin: .1rem;
+    
+                    .exit-button {
+                        margin: .1rem;
+                    }
+                    
+                    .answer-button {
+                        margin: .1rem;
+                    }
+    
+                    input {
+                        position: absolute;
+                        top: 3rem;
+                    }
+                }
+            }
+        }
     }
 }
 
+#big-container {
+    grid-template-rows: 4rem auto;
+    display:grid; 
+    grid-template-columns: 100%; 
+    height: 100vh; 
+    width: 100vw;
+}
+
+.content {
+    width: 100%;
+    overflow-y: hidden;
+    display: grid;
+    grid-template-columns: 16rem auto;
+    padding: 0;
+    margin: 0;
+    background-color: $mainColor;
+}
+
 .side-bar {
-    // display: grid;
     grid-template-columns: 100%;
-    // justify-items: center;
-    // min-width: 16rem;
     height: 100%;
     background-color: $accentColor;
     overflow-y: scroll;
@@ -152,7 +224,7 @@ body {
         position: relative;
         overflow: hidden;
 
-        &.add-question{
+        &.add-question {
             div {
                 display: grid;
                 justify-items: center;
@@ -180,7 +252,7 @@ body {
             user-select: none;
             cursor: pointer;
 
-            &:hover{
+            &:hover {
                 border: solid;
                 border-color: white;
                 border-width: .1rem;
@@ -219,6 +291,7 @@ body {
         background-color: $accentColor;
         height: 100%;
         width: 100%;
+
         .button {
             display: grid;
             justify-items: center;
@@ -253,10 +326,13 @@ body {
                 position: absolute;
                 top: 0;
                 right: 0;
+
                 padding: 0 {
                     left: .5rem;
                     right: .5rem;
-                };
+                }
+
+                ;
                 margin: .5rem;
                 height: 2rem;
                 background-color: grey;

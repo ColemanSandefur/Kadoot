@@ -100,6 +100,50 @@ export class QuestionManager{
         if (author_name.length > 64) {
             author_name = author_name.substr(0, 64);
         }
+
+        for (let i = 0; i < questions.length; i++){ //remove any questions that have an empty title or have no answers with text in
+            let question = questions[i];
+
+            if (questions.length == 0){
+                break;
+            }
+
+            if (question[0].trim().length == 0) {
+                questions.splice(i,1);
+                i--;
+                console.log("splice");
+                continue;
+            } 
+
+            if (question[1].length > 4) {
+                question[1].splice(4);
+            }
+
+            let allEmpty = true;
+
+            for (let j = 0; j < question[1].length; j++){
+                console.log(question[1][j].trim().length);
+                if (question[1][j].trim().length > 0){
+                    allEmpty = false;
+                    break;
+                }
+            }
+
+            if (allEmpty){
+                console.log("all empty");
+                questions.splice(i, 1);
+                i--;
+                continue;
+            }
+        }
+
+        console.log(questions);
+
+        //Don't insert any quizes that don't have a name or any questions
+        if (game_name.trim().length == 0 || questions.length == 0){
+            return;
+        }
+
         DatabaseManager.dbQuery("INSERT INTO quizzes (game_name, author_name) VALUES (?, ?)", [game_name, author_name]).then((data) => {
             let quiz_id = (<any>data).insertId;
 
@@ -109,14 +153,6 @@ export class QuestionManager{
                 if (question[0].length > 256) {
                     question[0] = question[0].substr(0, 256);
                 }
-
-                console.log(question[1]);
-
-                if (question[1].length > 4) {
-                    question[1].splice(4);
-                }
-
-                console.log(question[1]);
 
                 for (let i = 0; i < question[1].length; i++){
                     if (question[1][i].length > 60){

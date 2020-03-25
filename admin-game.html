@@ -29,7 +29,6 @@
 
             socket.on("user-connected", (name, id) => {
                 name = clean(name);
-                console.log(name);
                 let div = $(`<div id="user${id}">${name}</div>`);
                 $(".players").append(div);
 

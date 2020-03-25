@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" screen-size="large">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,13 +7,12 @@
     <title>Quiz Creator</title>
 </head>
 <body>
-    <div id="big-container" style="display:grid; grid-template-columns: 100%; grid-template-rows: 4rem auto; height: 100vh; width: 100vw;">
+    <div id="big-container">
         <div class="top-bar">
             <div class="inputs">
                 <input size="1" type="text" id="quiz-name-input" name="quiz-name-input" placeholder="Quiz Name" maxlength="128">
                 <input size="1" type="text" id="author-name-input" name="author-name-input" placeholder="Author Name" maxlength="64">
             </div>
-            
             <div class="create-button"><div>create</div></div>
         </div>
         <div class="content">
@@ -229,17 +228,52 @@
             $(".create-button").click(() => {
                 let quiz_name = $("#quiz-name-input");
                 let author_name = $("#author-name-input");
-                let form = $(`<form method="POST" action="/quiz-creator" style="visibility: hidden"></form>`);
-                let input = $(`<input name="game-data" id="game-data">`);
-                input.val(JSON.stringify(reformatForStreaming()));
 
-                form.append(quiz_name);
-                form.append(author_name);
-                form.append(input);
+                if (quiz_name.val().trim().length == 0){
+                    alert("please add a quiz name");
+                    return;
+                }
 
-                $("body").append(form);
+                for (let i = 0; i < questions.length; i++){
+                    if (questions[i].question.trim().length == 0){
+                        if (confirm("please make sure that all of your questions have a written question. Continue? (ANY QUESTIONS THAT DON'T HAVE A WRITTEN QUESTION WILL BE REMOVED WHEN UPLOADING!)")) {
+                            upload();
+                            return;
+                        };
+                        return;
+                    }
+                    let allEmpty = true;
+                    for (let j = 0; j < questions[i].choices.length; j++){
+                        if (questions[i].choices[j].trim().length > 0) {
+                            allEmpty = false;
+                            break;
+                        }
+                    }
+                    if (allEmpty){
+                        if (confirm("please make sure that all of your questions have an answer choice. Continue? (ANY QUESTIONS THAT DON'T HAVE A VALID ANSWER CHOICE WILL BE REMOVED WHEN UPLOADING!)")) {
+                            upload();
+                            return;
+                        }
+                        return;
+                    }
+                }
 
-                form.submit();
+                function upload() {
+                    let form = $(`<form method="POST" action="/quiz-creator" style="visibility: hidden"></form>`);
+                    let input = $(`<input name="game-data" id="game-data">`);
+                    input.val(JSON.stringify(reformatForStreaming()));
+
+                    form.append(quiz_name);
+                    form.append(author_name);
+                    form.append(input);
+
+                    $("body").append(form);
+
+                    form.submit();
+                }   
+
+                upload();
+                
             });
 
             changedWindowSize();
@@ -276,13 +310,9 @@
 
         function changedWindowSize() {
             if ($("html").width() < 565) {
-                $("#big-container").css("grid-template-rows", "8rem auto");
-                $(".inputs").children().addClass("mini-screen");
-                $(".content").addClass("mini-screen");
+                $("html").attr("screen-size", "small");
             } else {
-                $("#big-container").css("grid-template-rows", "4rem auto");
-                $(".inputs").children().removeClass("mini-screen");
-                $(".content").removeClass("mini-screen");
+                $("html").attr("screen-size", "large");
             }
         }
 
