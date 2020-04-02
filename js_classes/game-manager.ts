@@ -20,6 +20,9 @@ export class GameManager {
         });
 
         this.sleep(3600000).then(() => { //wait for an hour then delete
+            if (GameManager.games[game_id] == null){
+                return;
+            }
             clearCookies(GameManager.games[game_id].getUserData());
             delete GameManager.games[game_id];
         });

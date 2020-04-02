@@ -62,6 +62,10 @@ html[screen-size="small"]{
     .form-holder form input {
         height: 3rem;
         width: 80%;
+        min-width: 8rem;
     }
 
+    .form-holder{
+        width: 100%;
+    }
 }

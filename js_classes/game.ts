@@ -55,13 +55,17 @@ export class Game {
         });
 
         socket.on("next-question", () => {
+            // If the question is still in progress when next-question is called, end the question
             if (this.quiz && this.cur_question_number == this.quiz.curQuestionIndex()){
                 this.stopQuestion();
                 return;
             }
+            // If the local question number is greater than the quiz question number, advance the question number for the quiz question number
             if (this.quiz && this.cur_question_number > this.quiz.curQuestionIndex()){
                 this.quiz?.nextQuestion();
-            } if (this.quiz?.getNumQuestions() == this.quiz?.curQuestionIndex()){
+            } 
+            // If it is the last question, give everyone the results
+            if (this.quiz?.getNumQuestions() == this.quiz?.curQuestionIndex()){
                 this.finalResults();
                 this.game_finished_callback();
                 return;
@@ -99,11 +103,11 @@ export class Game {
             this.user_sockets[cookie]?.emit("new-question", choices?.length);
         }
 
-        this.host?.emit("new-question-info", question, choices);
+        this.question_cur_time = Date.now();
+
+        this.host?.emit("new-question-info", question, choices, this.question_cur_time, this.question_max_time);
 
         let questionIndex = this.quiz.curQuestionIndex();
-
-        this.question_cur_time = Date.now();
 
         this.sleep(this.question_max_time).then(() => {
             this.stopQuestion(questionIndex);

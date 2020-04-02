@@ -29,7 +29,7 @@
             socket.emit("search-games", "", (dat) => {
                 formatData(dat);
             });
-            
+
             //Searches games when the searchbar's data is changed and displays
             //the games when the search is complete
             $(".search-bar").keyup(function() {
@@ -40,6 +40,7 @@
 
             changedWindowSize();
         });
+
 
         function formatData(dat){
             $("#games").html("");

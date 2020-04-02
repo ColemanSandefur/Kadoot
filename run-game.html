@@ -10,7 +10,7 @@
         <tr style="height: 10rem; vertical-align: top;">
             <td class="question-info">
                 <h1>Question: <span style="position: absolute; right: 0; padding-right: .5rem; user-select: none;" id="next-button">continue</span></h1>
-                <p id="question"></p>
+                <p id="question" style="position: relative;"></p><span id="timer" style="position: absolute; right: 0; top: 4rem; margin-top: 1em; margin-right: .5rem; font-size: 2rem;"></span>
             </td>
         </tr>
         <tr>
@@ -29,6 +29,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
         let socket;
+        let time;
 
         $(() => {
             socket = io();
@@ -41,11 +42,16 @@
                 $(`#id${i}`).removeClass().addClass(`grid-button ${colors[i]} hidden`);
             }
 
-            socket.on("new-question-info", (question, choices) => {
+            socket.on("new-question-info", (question, choices, start_time, total_time) => {
                 $("#question").html(clean(question));
                 $("#content").html("").removeClass().addClass("button-holder");
                 $("#content").css("visibility", "visible");
-                
+
+                time = Math.floor((total_time - (Date.now() - start_time))/1000);
+
+                $("#timer").html(time);
+
+                timer();
 
                 for (var i = 0; i < 4; i++){
                     if (i < choices.length){
@@ -102,6 +108,22 @@
                 socket.emit("next-question");
             });
         });
+
+        async function timer() {
+            while (time > 0) {
+                await sleep(1000);
+                time--;
+                console.log(time);
+                $("#timer").html(time);
+            }
+        }
+
+        function sleep(ms) {
+            console.log(`sleeping for ${ms}ms`);
+            return new Promise((res, rej) => {
+                setTimeout(res, ms);
+            });
+        }
 
         function clean(msg){ //Cleanse the message from potentially hazardous characters
 
