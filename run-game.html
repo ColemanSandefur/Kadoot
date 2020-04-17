@@ -30,6 +30,8 @@
     <script>
         let socket;
         let time;
+        let question_number = -1;
+        let run = false;
 
         $(() => {
             socket = io();
@@ -46,6 +48,7 @@
                 $("#question").html(clean(question));
                 $("#content").html("").removeClass().addClass("button-holder");
                 $("#content").css("visibility", "visible");
+                question_number++;
 
                 time = Math.floor((total_time - (Date.now() - start_time))/1000);
 
@@ -76,6 +79,9 @@
             });
             
             socket.on("give-question-results", (user_response, correct_answers, num_choices) => {
+                run = false; //prevent the timer to continue to count down if quiz is finished early
+                $("#timer").html(0);
+
                 let responses = {};
                 for (let i = 0; i < num_choices; i++) {
                     responses[i] = 0;
@@ -110,8 +116,15 @@
         });
 
         async function timer() {
+            let tmp_question = question_number;
+            run = true;
             while (time > 0) {
                 await sleep(1000);
+
+                if (tmp_question < question_number || !run) {
+                    return;
+                }
+
                 time--;
                 console.log(time);
                 $("#timer").html(time);
@@ -119,7 +132,6 @@
         }
 
         function sleep(ms) {
-            console.log(`sleeping for ${ms}ms`);
             return new Promise((res, rej) => {
                 setTimeout(res, ms);
             });

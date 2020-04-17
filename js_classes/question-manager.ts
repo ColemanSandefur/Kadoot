@@ -138,6 +138,8 @@ export class QuestionManager{
 
             if ((question[3] + "").length == 0){
                 question[3] = 10;
+            } else if (question[3] > 300) {
+                question[3] = 300;
             }
         }
 
