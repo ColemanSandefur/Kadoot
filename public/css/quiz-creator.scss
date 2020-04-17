@@ -99,6 +99,18 @@ html[screen-size="small"] {
         grid-template-columns: 100%;
         grid-template-rows: 7rem auto;
 
+        .main-content {
+            #question-input {
+                width: 100%;
+                height: 2.5rem;
+            }
+
+            #question-time-input {
+                width: 100%;
+                height: 2.5rem;
+            }
+        }
+
         .side-bar {
             border: solid;
             border-width: 2px;
@@ -279,7 +291,20 @@ html[screen-size="small"] {
         font-size: 3rem;
         color: white;
         height: 100%;
-        width: 100%;
+        width: 80%;
+        user-select: none;
+    }
+
+    #question-time-input {
+        background-color: $accentColor;
+        border: none;
+        border-radius: $borderRadius;
+        padding: 0;
+        margin: 0;
+        font-size: 3rem;
+        color: white;
+        height: 100%;
+        width: 18%;
         user-select: none;
     }
 

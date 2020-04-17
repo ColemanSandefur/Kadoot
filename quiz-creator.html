@@ -21,7 +21,10 @@
             <div class="main-content">
                 <table style="height: 100%; width: 100%; padding: 0; margin: 0;">
                     <tr style="height: 4rem; width: 100%; font-size: 2rem;">
-                        <td style="padding: .5rem;"><input type="text" placeholder="Question" name="question-input" id="question-input" style="visibility: hidden;" maxlength="256"></td>
+                        <td style="padding: .5rem;">
+                            <input type="text" placeholder="Question" name="question-input" id="question-input" style="visibility: hidden;" maxlength="256">
+                            <input type="number" placeholder="time" name="question-time-input" id="question-time-input" style="visibility: hidden;" max="300" title="question length (seconds)">
+                        </td>
                     </tr>
                     <tr>
                         <td>
@@ -38,7 +41,7 @@
     <script>
         $(() => {
             let colors = ["green", "red", "purple", "blue"];
-            let questions = [{question: "", choices: [], answers: []}, {question: "", choices: [], answers: []}, {question: "", choices: [], answers: []} ,{question: "", choices: [], answers: []}, {question: "", choices: [], answers: []}, {question: "", choices: [], answers: []}];
+            let questions = [];
             let cur_question_index = -1;
 
             $("#question-input").keyup(function() {
@@ -47,6 +50,15 @@
                 }
 
                 questions[cur_question_index].question = $(this).val();
+                reloadQuestions();
+            });
+
+            $("#question-time-input").keyup(function() {
+                if (cur_question_index < 0 || cur_question_index > questions.length) {
+                    return;
+                }
+
+                questions[cur_question_index].question_time = $(this).val();
                 reloadQuestions();
             });
 
@@ -66,14 +78,17 @@
                 if (cur_question_index < 0){
                     $(".button-holder").html("");
                     $('#question-input').html("").css("visibility", "hidden");
+                    $('#question-time-input').html("").css("visibility", "hidden");
                     
                     return;
                 }
 
                 $("#question-input").css("visibility", "visible");
+                $("#question-time-input").css("visibility", "visible");
 
                 let cur_question = questions[cur_question_index];
                 $("#question-input").val(cur_question.question);
+                $("#question-time-input").val(cur_question.question_time);
 
                 let button_holder = $(".button-holder");
                 button_holder.html("");
@@ -163,7 +178,7 @@
                 parent.append(add_button);
 
                 add_button.click(function() {
-                    questions.push({question: "", choices: [], answers: []});
+                    questions.push({question: "", choices: [], answers: [], question_time: 10});
                     cur_question_index = questions.length - 1;
                     reloadButtons();
                     reloadQuestions();
@@ -216,14 +231,7 @@
 
             reloadQuestions();
 
-            function reformatForStreaming() {
-                let data = [];
-                for (let i = 0; i < questions.length; i++){
-                    let cur_question = questions[i];
-                    data.push([cur_question.question, cur_question.choices, cur_question.answers]);
-                }
-                return data;
-            }
+            
 
             $(".create-button").click(() => {
                 let quiz_name = $("#quiz-name-input");
@@ -256,6 +264,15 @@
                         }
                         return;
                     }
+                }
+
+                function reformatForStreaming() {
+                    let data = [];
+                    for (let i = 0; i < questions.length; i++){
+                        let cur_question = questions[i];
+                        data.push([cur_question.question, cur_question.choices, cur_question.answers, cur_question.question_time]);
+                    }
+                    return data;
                 }
 
                 function upload() {
@@ -309,7 +326,7 @@
         }
 
         function changedWindowSize() {
-            if ($("html").width() < 565) {
+            if ($("html").width() < 720) {
                 $("html").attr("screen-size", "small");
             } else {
                 $("html").attr("screen-size", "large");

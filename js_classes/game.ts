@@ -105,11 +105,11 @@ export class Game {
 
         this.question_cur_time = Date.now();
 
-        this.host?.emit("new-question-info", question, choices, this.question_cur_time, this.question_max_time);
+        this.host?.emit("new-question-info", question, choices, this.question_cur_time, this.quiz.getCurQuestion()[3] * 1000);
 
         let questionIndex = this.quiz.curQuestionIndex();
 
-        this.sleep(this.question_max_time).then(() => {
+        this.sleep(this.quiz.getCurQuestion()[3] * 1000).then(() => {
             this.stopQuestion(questionIndex);
         });
     }

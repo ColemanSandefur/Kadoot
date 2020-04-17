@@ -100,7 +100,7 @@ app.get("/quiz-creator", (req, res) => {
 
 app.post("/quiz-creator", (req, res) => {
     res.redirect("/game-creator");
-    let dat = <[string, string[], number[]][]>JSON.parse(req.body["game-data"]);
+    let dat = <[string, string[], number[], number][]>JSON.parse(req.body["game-data"]);
     QuestionManager.saveQuiz(req.body["quiz-name-input"], req.body["author-name-input"], dat);
 });
 

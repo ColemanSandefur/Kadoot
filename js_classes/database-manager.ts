@@ -23,7 +23,7 @@ export class DatabaseManager{
 
             con.changeUser({database: "kadoot_data"}, (err) => {
                 if (err) throw err;
-                this.dbQuery("CREATE TABLE IF NOT EXISTS `questions` (`id` int NOT NULL AUTO_INCREMENT,`quiz_id` int DEFAULT NULL,`question_number` int DEFAULT NULL,`question` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,`choices` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,`answers` varchar(9) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,UNIQUE KEY `id` (`id`)) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
+                this.dbQuery("CREATE TABLE IF NOT EXISTS `questions` (`id` int NOT NULL AUTO_INCREMENT,`quiz_id` int DEFAULT NULL,`question_number` int DEFAULT NULL,`question` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,`choices` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,`answers` varchar(9) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL, `question_time` int NOT NULL DEFAULT '10', PRIMARY KEY (`id`), UNIQUE KEY `id` (`id`)) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
                 this.dbQuery("CREATE TABLE IF NOT EXISTS `quizzes` (`id` int NOT NULL AUTO_INCREMENT,`game_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,`author_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,UNIQUE KEY `id` (`id`)) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci");
                 console.log("connected to the kadoot_data database");
             });

@@ -10,16 +10,16 @@ export interface Question {
 export class QuestionManager{
     private author: string;
     private name: string;
-    private questions: [string, string[], number[]][];
+    private questions: [string, string[], number[], number][];
     private cur_question: number = 0;
 
-    constructor(author: string, name: string, question: [string, string[], number[]][]){
+    constructor(author: string, name: string, question: [string, string[], number[], number][]){
         this.author = author;
         this.name = name;
         this.questions = question;
     }
 
-    public getCurQuestion(): [string, string[], number[]] {
+    public getCurQuestion(): [string, string[], number[], number] {
         return this.questions[this.cur_question];
     }
 
@@ -68,15 +68,15 @@ export class QuestionManager{
         });
     }
 
-    private static loadQuestions(quiz_id: number): Promise<[string, string[], number[]][]> {
+    private static loadQuestions(quiz_id: number): Promise<[string, string[], number[], number][]> {
         return new Promise((res, rej) => {
             DatabaseManager.dbQuery("SELECT * FROM questions WHERE quiz_id=?", [quiz_id]).then((raw_dat) => {
-                let questions: [string, string[], number[]][] = [];
+                let questions: [string, string[], number[], number][] = [];
     
                 for (let i = 0; i < raw_dat.length; i++){
                     let question = raw_dat[i];
     
-                    questions.push([question.question, JSON.parse(question.choices), JSON.parse(question.answers)]);
+                    questions.push([question.question, JSON.parse(question.choices), JSON.parse(question.answers), question.question_time]);
                 }
     
                 res(questions);
@@ -93,7 +93,7 @@ export class QuestionManager{
         });
     }
 
-    public static saveQuiz(game_name: string, author_name: string, questions: [string, string[], number[]][]) {
+    public static saveQuiz(game_name: string, author_name: string, questions: [string, string[], number[], number][]) {
         if (game_name.length > 128) {
             game_name = game_name.substr(0, 128);
         }
@@ -135,6 +135,10 @@ export class QuestionManager{
                 i--;
                 continue;
             }
+
+            if ((question[3] + "").length == 0){
+                question[3] = 10;
+            }
         }
 
         console.log(questions);
@@ -159,7 +163,7 @@ export class QuestionManager{
                         question[1][i] = question[1][i].substr(0, 60);
                     }
                 }
-                DatabaseManager.dbQuery("INSERT INTO questions (quiz_id, question, choices, answers) VALUES (?, ?, ?, ?)", [quiz_id, question[0], JSON.stringify(question[1]), JSON.stringify(question[2])]);
+                DatabaseManager.dbQuery("INSERT INTO questions (quiz_id, question, choices, answers, question_time) VALUES (?, ?, ?, ?, ?)", [quiz_id, question[0], JSON.stringify(question[1]), JSON.stringify(question[2]), question[3]]);
             }
         })
     }
