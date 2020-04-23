@@ -7,6 +7,7 @@ import path = require("path");
 import bodyParser = require("body-parser");
 import socket_io = require("socket.io");
 const io = socket_io(server);
+import bcrypt = require("bcrypt");
 
 //Adding directories
 app.use(express.static(__dirname + "/public"));
@@ -21,6 +22,7 @@ import {QuestionManager} from "./js_classes/question-manager";
 import { GameManager } from './js_classes/game-manager';
 import { UserManager } from './js_classes/user-manager';
 import { LinkManager } from "./js_classes/link-manager";
+import { AccountManager } from "./js_classes/account-manager"
 
 DatabaseManager.initializeDatabase();
 
@@ -102,6 +104,20 @@ app.post("/quiz-creator", (req, res) => {
     res.redirect("/game-creator");
     let dat = <[string, string[], number[], number][]>JSON.parse(req.body["game-data"]);
     QuestionManager.saveQuiz(req.body["quiz-name-input"], req.body["author-name-input"], dat);
+});
+
+app.get("/sign-in", (req, res) => {
+    res.sendFile(__dirname + "/sign-in.html");
+})
+
+app.post("/sign-in", (req, res) => {
+    AccountManager.signIn(req.body.username, req.body.password).then((result) => {
+        if (result) {
+            res.send("You were signed in!");
+        } else {
+            res.sendFile(__dirname + "/sign-in.html");
+        }
+    });
 });
 
 app.post("/remote-game-creator", (req, res) => {

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/sign-in.css">
+    <title>Document</title>
+</head>
+<body>
+    <div>
+        <div id="form-holder">
+            <form action="/sign-in" method="post">
+                <h1 class="title">Sign In</h1>
+                <p class="info">User Name</p>
+                <div class="input-holder">
+                    <input size="1" type="text" name="username" id="username" class="inputs">
+                </div>
+                
+                <p class="info">Password</p>
+    
+                <div class="input-holder">
+                    <input size="1" type="password" name="password" id="password" class="inputs"><br>
+                </div>
+                
+                <div style="text-align: center;">
+                    <input type="submit" value="sign in" class="submit">
+                </div>
+                
+            </form>
+        </div>
+        <div class="other-buttons">
+            <input type="button" value="create account" class="create-account"><br>
+            <input type="button" value="forgot password?" class="forgot-password">
+        </div>
+    </div>
+    
+</body>
+</html>
