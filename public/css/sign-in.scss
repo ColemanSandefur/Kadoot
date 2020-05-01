@@ -91,6 +91,12 @@ body {
 .other-buttons {
     background-color: #0a3856;
     text-align: center;
+    border-bottom-left-radius: $border-radius;
+    border-bottom-right-radius: $border-radius;
+    padding: {
+        bottom: 2rem;
+        top: 1rem;
+    }
     
     & input {
         background-color: $input_color;
@@ -106,11 +112,23 @@ body {
             border: 1px white solid;
         }
     }
+}
 
-    border-bottom-left-radius: $border-radius;
-    border-bottom-right-radius: $border-radius;
+.alert {
+    background-color: orange;
+    text-align: center;
+    border-top-left-radius: $border-radius;
+    border-top-right-radius: $border-radius;
     padding: {
-        bottom: 2rem;
         top: 1rem;
+        bottom: 1rem;
     }
+    font-size: 1.5rem;
+}
+
+html[error="true"] {
+    #form-holder{
+    border-radius: 0;
+    }
+    
 }

@@ -8,6 +8,8 @@ import bodyParser = require("body-parser");
 import socket_io = require("socket.io");
 const io = socket_io(server);
 import bcrypt = require("bcrypt");
+import fs = require("fs");
+import ejs = require("ejs");
 
 //Adding directories
 app.use(express.static(__dirname + "/public"));
@@ -22,7 +24,7 @@ import {QuestionManager} from "./js_classes/question-manager";
 import { GameManager } from './js_classes/game-manager';
 import { UserManager } from './js_classes/user-manager';
 import { LinkManager } from "./js_classes/link-manager";
-import { AccountManager } from "./js_classes/account-manager"
+import { AccountManager } from "./js_classes/account-manager";
 
 DatabaseManager.initializeDatabase();
 
@@ -62,8 +64,16 @@ app.get("/game-creator", (req, res) => {
     res.sendFile(__dirname + "/game-creator.html");
 });
 
+/* This is where the quizzes are created */
 app.post("/game-creator", (req, res) => {
     let question_id = req.body.game_id;
+
+    let account_id = AccountManager.getAccountId(req.headers.cookie + ";");
+    console.log(AccountManager.getAccountData(account_id));
+    if (AccountManager.getAccountData(account_id) == undefined) {
+        res.redirect("/sign-in/error=Please sign in to continue");
+        return;
+    }
     
     if (question_id == null || question_id + "".trim().length == 0){
         res.redirect("/game-creator.html");
@@ -84,6 +94,7 @@ app.get("/admin-game", (req, res) => {
     res.sendFile(__dirname + "/admin-game.html");
 })
 
+/* This is where the quizzes are started */
 app.post("/admin-game", (req, res) => {
     res.redirect("/run-game");
 });
@@ -100,6 +111,7 @@ app.get("/quiz-creator", (req, res) => {
     res.sendFile(__dirname + "/quiz-creator.html");
 });
 
+/* This is wehre the quizzes are created and saved */
 app.post("/quiz-creator", (req, res) => {
     res.redirect("/game-creator");
     let dat = <[string, string[], number[], number][]>JSON.parse(req.body["game-data"]);
@@ -107,16 +119,28 @@ app.post("/quiz-creator", (req, res) => {
 });
 
 app.get("/sign-in", (req, res) => {
-    res.sendFile(__dirname + "/sign-in.html");
+    fs.readFile(__dirname + "/sign-in.html", (err, html) => {
+        res.send(ejs.render(html.toString()));
+    })
+});
+
+app.get("/sign-in/error=:error", (req, res) => {
+    fs.readFile(__dirname + "/sign-in.html", (err, html) => {
+        res.send(ejs.render(html.toString(), {error: req.params["error"]}));
+    });
 })
 
+/* This is where the user gets signed in */
 app.post("/sign-in", (req, res) => {
-    AccountManager.signIn(req.body.username, req.body.password).then((result) => {
-        if (result) {
-            res.send("You were signed in!");
-        } else {
-            res.sendFile(__dirname + "/sign-in.html");
+    AccountManager.signIn(req.body.username, req.body.password).then((cookie) => {
+        if (cookie == null) {
+            res.redirect("/sign-in/error=Wrong username or password");
+            return;
         }
+        
+        res.cookie("account_id", cookie);
+        console.log(AccountManager.getAccountData());
+        res.redirect("/game-creator");
     });
 });
 

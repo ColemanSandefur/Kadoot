@@ -1,9 +1,11 @@
 import socket_io = require("socket.io");
 import {GameManager} from "./game-manager";
 import {QuestionManager} from "./question-manager";
+import { AccountManager } from "./account-manager";
 
 export class SocketManager {
     static addListeners(socket: socket_io.Socket){
+        AccountManager.reconnectUser(socket);
         GameManager.reconnectUser(socket);
 
         //When a socket wants to search for games it emits "search-games"

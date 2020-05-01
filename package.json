@@ -10,6 +10,7 @@
   "author": "Coleman Sandefur",
   "license": "ISC",
   "dependencies": {
+    "@types/ejs": "^3.0.3",
     "@types/express": "^4.17.2",
     "@types/mongodb": "^3.5.2",
     "@types/mysql": "^2.15.9",
@@ -17,6 +18,7 @@
     "@types/socket.io": "^2.1.4",
     "bcrypt": "^4.0.1",
     "biguint-format": "^1.0.1",
+    "ejs": "^3.1.2",
     "express": "^4.17.1",
     "flake-idgen": "^1.1.2",
     "mongodb": "^3.5.4",

@@ -1,14 +1,18 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" error="false">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/sign-in.css">
+    <link rel="stylesheet" href="/css/sign-in.css">
     <title>Document</title>
 </head>
 <body>
+    
     <div>
+        <% if (typeof(error) != "undefined") { %>
+            <div class="alert"><%= error %></div>
+        <% } %>
         <div id="form-holder">
             <form action="/sign-in" method="post">
                 <h1 class="title">Sign In</h1>
@@ -34,6 +38,11 @@
             <input type="button" value="forgot password?" class="forgot-password">
         </div>
     </div>
-    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <% if (typeof(error) != "undefined") { %>
+    <script>
+        $("html").attr("error", "true");
+    </script>
+    <% } %>
 </body>
 </html>
