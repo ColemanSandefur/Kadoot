@@ -61,6 +61,10 @@ body {
     }
 }
 
+.inputs:-internal-autofill-selected{
+    background-color: $input_color;
+}
+
 .input-holder {
     border: 2px purple solid;
     margin-bottom: 1.5rem;
@@ -98,14 +102,20 @@ body {
         top: 1rem;
     }
     
-    & input {
+    & a, & input {
         background-color: $input_color;
         border: none;
+        display: inline-block;
         min-width: 16rem;
         height: 2rem;
         margin-top: 1rem;
         font-size: 1.5rem;
         border-radius: $border-radius;
+        text-decoration: none;
+        padding: {
+            top: .25rem;
+            bottom: .25rem;
+        }
         
         &:focus {
             outline: none;

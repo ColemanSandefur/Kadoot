@@ -36,16 +36,20 @@ app.get("/", (req, res) => {
     res.sendFile(__dirname + "/index.html");
 });
 
-app.get("/id=:id", (req, res) => {
-    res.sendFile(__dirname + "/index.html");
+app.get("/join", (req, res) => {
+    res.sendFile(__dirname + "/join.html");
 });
 
-app.post("/", (req, res) => {
+app.get("/join/id=:id", (req, res) => {
+    res.sendFile(__dirname + "/join.html");
+});
+
+app.post("/join", (req, res) => {
     let username = (<string>req.body.username).substr(0, 32);
     let game_id = Number.parseInt((<string>req.body.game_id).substr(0, 8));
 
     if (username == null || username.trim().length == 0 || game_id == null || game_id +"".trim.length == 0){
-        res.redirect("/");
+        res.redirect("/join");
         return;
     }
     
@@ -61,7 +65,17 @@ app.get("/game", (req, res) => {
 })
 
 app.get("/game-creator", (req, res) => {
-    res.sendFile(__dirname + "/game-creator.html");
+
+    let data = AccountManager.getAccountData(AccountManager.getAccountId(req.headers.cookie + ";"));
+
+    fs.readFile(__dirname + "/game-creator.html", (err, html) => {
+        if (data != null) {
+            res.send(ejs.render(html.toString(), {signedin: true}));
+            return;
+        }
+        res.send(ejs.render(html.toString(), {signedin: false}));
+    })
+    // res.sendFile(__dirname + "/game-creator.html");
 });
 
 /* This is where the quizzes are created */
@@ -69,14 +83,13 @@ app.post("/game-creator", (req, res) => {
     let question_id = req.body.game_id;
 
     let account_id = AccountManager.getAccountId(req.headers.cookie + ";");
-    console.log(AccountManager.getAccountData(account_id));
     if (AccountManager.getAccountData(account_id) == undefined) {
         res.redirect("/sign-in/error=Please sign in to continue");
         return;
     }
     
     if (question_id == null || question_id + "".trim().length == 0){
-        res.redirect("/game-creator.html");
+        res.redirect("/game-creator");
         return;
     }
 
@@ -128,7 +141,7 @@ app.get("/sign-in/error=:error", (req, res) => {
     fs.readFile(__dirname + "/sign-in.html", (err, html) => {
         res.send(ejs.render(html.toString(), {error: req.params["error"]}));
     });
-})
+});
 
 /* This is where the user gets signed in */
 app.post("/sign-in", (req, res) => {
@@ -139,10 +152,56 @@ app.post("/sign-in", (req, res) => {
         }
         
         res.cookie("account_id", cookie);
-        console.log(AccountManager.getAccountData());
         res.redirect("/game-creator");
     });
 });
+
+/* Logs users out when they go to /logout */
+app.get("/logout", (req, res) => {
+    AccountManager.deleteAccountCookie(AccountManager.getAccountId(req.headers.cookie + ";"));
+
+    res.redirect("/");
+});
+
+app.get("/create-account", (req, res) => {
+    fs.readFile(__dirname + "/account-creator.html", (err, html) => {
+        res.send(ejs.render(html.toString()));
+    });
+});
+
+/* gives user error message in html document using ejs */
+app.get("/create-account/error=:error", (req, res) => {
+    fs.readFile(__dirname + "/account-creator.html", (err, html) => {
+        res.send(ejs.render(html.toString(), {error: req.params["error"]}));
+    });
+});
+
+app.post("/create-account", async (req, res) => {
+    let username = req.body.username;
+    let password = req.body.password;
+    let passwordConf = req.body.passwordConf;
+    let email = req.body.email;
+
+    let credentialsUsed = await AccountManager.credentialsUsed(username, email);
+
+    if (credentialsUsed == true) {
+        res.redirect("/create-account/error=Username or email used");
+        return;
+    }
+
+    if (password != passwordConf) {
+        res.redirect("/create-account/error=Passwords don't match");
+        return;
+    }
+
+    AccountManager.createAccount(username, password, email).then((success) => {
+        if (success) {
+            res.redirect("/sign-in");
+        } else {
+            res.redirect("/create-account/error=An error has occurred");
+        }
+    });
+})
 
 app.post("/remote-game-creator", (req, res) => {
     let question_id = req.body.question_id;
@@ -166,11 +225,11 @@ app.get("/admin-game/:oneTimeCode", (req, res) => {
     let linkData = LinkManager.getLinkData(oneTimeCode);
 
     if (linkData == null){
-        res.redirect("/");
+        res.redirect("/join");
         return;
     } else if (linkData.host == false) {
         console.log("not host");
-        res.redirect("/");
+        res.redirect("/join");
         return;
     }
 

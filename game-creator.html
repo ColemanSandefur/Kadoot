@@ -8,6 +8,25 @@
     <title>Create Game</title>
 </head>
 <body>
+    <div class="toolbar">
+        <p class="logo"><a href="/">Kadoot!</a></p>
+        <span class="right" >
+            <p class="join"><a href="/join">join</a></p>
+            <% if (signedin === true) { %>
+                <span>
+                    <p class="account">
+                        <a>my account</a>
+                    </p>
+                    <div class="account-dropdown">
+                        <p><a href="/logout">log out</a></p>
+                    </div>
+                </span>
+                
+            <% } else { %>
+                <p class="login"><a href="/sign-in">login</a></p>
+            <% } %>
+        </span>
+    </div>
     <div class="title-bar">
         <p>search games </p>
         <input size="1" type="text" class="search-bar">
@@ -37,6 +56,19 @@
                     formatData(dat);
                 });
             });
+
+            $(".account").click(() => {
+                if ($(".account-dropdown").css("visibility") == "visible") {
+                    $(".account-dropdown").css("visibility", "hidden");
+                    $(".shade").remove();
+                } else {
+                    $("body").append($(`<div style="width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, .5); z-index: 1; position: absolute; top: 0; left: 0;" class="shade"></div>`).click(() => {
+                        $(".account-dropdown").css("visibility", "hidden");
+                        $(".shade").remove();
+                    }));
+                    $(".account-dropdown").css("visibility", "visible");
+                }
+            })
 
             changedWindowSize();
         });

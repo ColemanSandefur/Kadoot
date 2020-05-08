@@ -1,4 +1,6 @@
 $fontSize: 2rem;
+$toolbar-height: 4rem;
+$toolbar-padding: 1rem;
 
 * {
     font-family: "Roboto";
@@ -7,17 +9,90 @@ $fontSize: 2rem;
 
 body {
     margin: 0;
-    height: 100vh;
     width: 100vw;
     background-color: #0f4c75;
+    margin-top: $toolbar-height;
+}
+
+
+
+.toolbar {
+    z-index: 2;
+    user-select: none;
+    position: absolute;
+    top: 0;
+    padding:0;
+    margin:0;
+    height: $toolbar-height;
+    width: 100vw;
+    background-color: #1b262c;
+    color: purple;
+    // background-color: #0d456a;
+
+    p {
+        display: inline-block;
+        line-height: $toolbar-height;
+        margin: 0;
+        padding: 0;
+        font-size: .6 * $toolbar-height;
+        color: rgb(0, 255, 247);
+    }
+
+    a {
+        color: white;
+        text-decoration: none;
+        line-height: $toolbar-height;
+    }
+
+    .logo {
+        padding-left: $toolbar-padding;
+        font-family: "Gloria Hallelujah", cursive;
+        cursor: pointer;
+    }
+
+    span.right {
+        position: absolute;
+        top:0;
+        right: 0;
+
+        a {
+            text-decoration: none;
+        }
+
+        p {
+            cursor: pointer;
+            user-select: none;
+            margin-right: $toolbar-padding;
+        }
+    }
+}
+
+.account-dropdown {
+    visibility: hidden;
+    z-index: 3;
+    position: absolute;
+    top: $toolbar-height;
+    right: 0;
+    display: block;
+    background-color: #24333b;
+    border: solid white{
+        width: 2px;
+        top-width: 0;
+    }
+    p {
+        padding: 0;
+        margin: 1rem;
+        display: inline-block;
+    }
 }
 
 .title-bar{
     position: sticky;
-    top: 0;
+    top: $toolbar-height;
     // height: $fontSize + .5rem;
     height: auto;
-    background-color: #1b262c;
+    background-color: #0c3f60;
+    // background-color: #1b262c;
     padding: .5rem;
     
     display: grid;

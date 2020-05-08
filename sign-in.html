@@ -18,13 +18,13 @@
                 <h1 class="title">Sign In</h1>
                 <p class="info">User Name</p>
                 <div class="input-holder">
-                    <input size="1" type="text" name="username" id="username" class="inputs">
+                    <input size="1" type="text" name="username" id="username" class="inputs" required>
                 </div>
                 
                 <p class="info">Password</p>
     
                 <div class="input-holder">
-                    <input size="1" type="password" name="password" id="password" class="inputs"><br>
+                    <input size="1" type="password" name="password" id="password" class="inputs" required><br>
                 </div>
                 
                 <div style="text-align: center;">
@@ -34,15 +34,17 @@
             </form>
         </div>
         <div class="other-buttons">
-            <input type="button" value="create account" class="create-account"><br>
-            <input type="button" value="forgot password?" class="forgot-password">
+            <a href="/create-account">create account</a><br>
+            <a href="/forgot-password">forgot password?</a>
+            <!-- <input type="button" value="create account" class="create-account"><br>
+            <input type="button" value="forgot password?" class="forgot-password"> -->
         </div>
     </div>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <% if (typeof(error) != "undefined") { %>
-    <script>
-        $("html").attr("error", "true");
-    </script>
+        <script>
+            $("html").attr("error", "true");
+        </script>
     <% } %>
 </body>
 </html>

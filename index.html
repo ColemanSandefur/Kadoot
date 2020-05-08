@@ -1,45 +1,26 @@
 <!DOCTYPE html>
-<html lang="en" screen-size="large">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Gloria+Hallelujah&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/index.css">
-    <title>Join Game</title>
+    <link rel="stylesheet" href="/css/index.css">
+    <title>Welcome to Kadoot</title>
 </head>
 <body>
-    <!-- <div style="position: absolute; top: 30%; text-align: center; width: 100vw;"><h1 style="font-size: 3rem; font-family: 'Gloria Hallelujah', cursive; ">Kadoot</h1></div> -->
-    <div class="form-holder">
-        <form action="/" method="post">
-            <h1 class="title">Kadoot</h1>
-            <input size="1" type="text" placeholder="name" name="username" maxlength="32"><br>
-            <input size="1" type="text" placeholder="game id" id="game_id" name="game_id" maxlength="8"><br>
-            <button type="submit">Submit</button>
-        </form>
+    <div class="toolbar">
+        <p class="logo">Kadoot!</p>
+        <span class="right" >
+            <p class="join"><a href="/join">join</a></p>
+            <p class="login"><a href="/sign-in">login</a></p>
+        </span>
     </div>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-    <script>
-        $(() => {
-            if (window.location.href.lastIndexOf("/") != window.location.href.length - 1) {
-                $("#game_id").val(window.location.href.substring(window.location.href.lastIndexOf("/id=") + 4));
-            }
-
-            function changedWindowSize() {
-                if ($("html").width() < 565) {
-                    $("html").attr("screen-size", "small");
-                } else {
-                    $("html").attr("screen-size", "large");
-                }
-            }
-
-            window.onresize = changedWindowSize;
-
-            changedWindowSize();
-        });
-
-        
-    </script>
+    <div class="title-bar">
+        <h2 class="sub-title">welcome to</h2>
+        <h1 class="title">Kadoot!</h1>
+    </div>
+    
 </body>
 </html>

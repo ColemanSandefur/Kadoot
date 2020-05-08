@@ -1,0 +1,71 @@
+$fontSize: 1.5rem;
+
+body {
+    background-color: #0f4c75;
+    margin: 0;
+    height: 100vh;
+    display: grid;
+    justify-items: center;
+    align-items: center;
+}
+
+* {
+    font-family: "Roboto", sans-serif;
+    color: white;
+}
+
+.title {
+    position: relative;
+    top: -9rem;
+    margin-bottom: -8rem;
+    font-family: 'Gloria Hallelujah', cursive; 
+    font-size: 2 * $fontSize;
+}
+
+.form-holder {
+    position:relative;
+    text-align: center;   
+
+    form{
+        input{
+            margin-bottom: 10px;
+            border: none;
+            border-radius: 10px;
+            height: 2rem;
+            padding: 0 5px;
+            font-size: $fontSize;
+            min-width: 20rem;
+            background-color: #1b262c;
+            color: white;
+            resize: horizontal;
+        }
+
+        button{
+            border: none;
+            border-radius: 10px;
+            height: 2rem;
+            font-size: $fontSize;
+            background-color: #1b262c;
+            color: white;
+            min-width: 6rem;
+
+            &:hover{
+                cursor: pointer;
+            }
+        }
+    }
+}
+
+html[screen-size="small"]{
+    $fontSize: 3rem;
+
+    .form-holder form input {
+        height: 3rem;
+        width: 80%;
+        min-width: 8rem;
+    }
+
+    .form-holder{
+        width: 100%;
+    }
+}

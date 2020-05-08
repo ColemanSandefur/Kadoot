@@ -6,28 +6,20 @@ export class AccountManager {
     static createAccount(username: string, password: string, email: string) {
         return new Promise((res, rej) => {
             bcrypt.hash(password, 12).then((passhash) => {
-                console.log([password, passhash]);
-                // DatabaseManager.dbQuery("INSERT INTO accounts (username, passhash, email) VALUES (?, ?, ?)", [username, passhash, email]);
-                res();
+                DatabaseManager.dbQuery("INSERT INTO accounts (username, passhash, email) VALUES (?, ?, ?)", [username, passhash, email]).then(() => {
+                    res(true);
+                },(error) => { //Called if there is an error;
+                    res(false);
+                });
             })
         });
     }
 
-    static validCredentials(username: string, password: string) {
+    /* checks if credentials have been used before */
+    static credentialsUsed(username: string, email: string): Promise<boolean> {
         return new Promise((res, rej) => {
-            DatabaseManager.dbQuery("SELECT * FROM accounts WHERE username=?", [username]).then((accounts) => {
-                if (accounts.length == 0) {
-                    res(false);
-                    return;
-                }
-
-                bcrypt.compare(password, accounts[0].passhash).then((matches) => {
-                    if (matches) {
-                        res(true);
-                        return;
-                    }
-                    res(false);
-                });
+            DatabaseManager.dbQuery("SELECT * FROM accounts WHERE username=? OR email=?", [username, email]).then((accounts) => {
+                res(accounts.length > 0);
             });
         });
     }
@@ -97,5 +89,10 @@ export class AccountManager {
         cookie += ";";
         let userIndex = cookie.indexOf("account_id=");
         return cookie.substring(userIndex + "account_id=".length, cookie.indexOf(";", userIndex));
+    }
+
+    static deleteAccountCookie(cookie: string) {
+        delete this.account_cookies[cookie];
+        return;
     }
 }

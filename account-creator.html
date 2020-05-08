@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/sign-in.css">
+    <title>Create an Account</title>
+</head>
+<body>
+    <div>
+        <% if (typeof(error) != "undefined") { %>
+        <div class="alert"><%= error %></div>
+        <% } %>
+        <div id="form-holder" style="border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+            <form action="/create-account" method="post">
+                <h1 class="title">Sign Up</h1>
+    
+                <p class="info">User Name</p>
+                <div class="input-holder">
+                    <input size="1" type="text" name="username" id="username" class="inputs" required>
+                </div>
+    
+                <p class="info">email</p>
+                <div class="input-holder">
+                    <input size="1" type="email" name="email" id="email" class="inputs" required>
+                </div>
+                
+                <p class="info">Password</p>
+                <div class="input-holder">
+                    <input size="1" type="password" name="password" id="password" class="inputs" required><br>
+                </div>
+    
+                <p class="info">Confirm Password</p>
+                <div class="input-holder">
+                    <input size="1" type="password" name="passwordConf" id="passwordConf" class="inputs" required><br>
+                </div>
+                
+                <div style="text-align: center;">
+                    <input type="submit" value="sign in" class="submit">
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        $(() => {
+            $("form").submit((e) => {
+                if ($("#password").val() != $("#passwordConf").val()) {
+                    // $(".alert").remove();
+                    // $("#form-holder").parent().prepend(`<div class="alert">Passwords don't match</div>`);
+                    // $("html").attr("error", "true");
+                    // e.preventDefault();
+                }
+            });
+        });
+    </script>
+    <% if (typeof(error) != "undefined") { %>
+        <script>
+            $("html").attr("error", "true");
+        </script>
+    <% } %>
+</body>
+</html>

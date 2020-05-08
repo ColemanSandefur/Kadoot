@@ -1,71 +1,75 @@
-$fontSize: 1.5rem;
+$main-color: #0f4c75;
+$toolbar-color: #0d456a;
+$toolbar-height: 4rem;
+$toolbar-padding: 1rem;
 
 body {
-    background-color: #0f4c75;
     margin: 0;
-    height: 100vh;
-    display: grid;
-    justify-items: center;
-    align-items: center;
+    padding: 0;
+    background-color: $main-color;
+    margin-top: $toolbar-height
 }
 
 * {
-    font-family: "Roboto", sans-serif;
     color: white;
+    font-family: "Roboto", sans-serif;
+}
+
+.toolbar {
+    user-select: none;
+
+    position: absolute;
+    top: 0;
+    padding:0;
+    margin:0;
+    height: $toolbar-height;
+    width: 100vw;
+    background-color: $toolbar-color;
+
+    p {
+        display: inline-block;
+        line-height: $toolbar-height;
+        margin: 0;
+        padding: 0;
+        font-size: .6 * $toolbar-height;
+    }
+
+    .logo {
+        padding-left: $toolbar-padding;
+        font-family: "Gloria Hallelujah", cursive;
+    }
+
+    span.right {
+        position: absolute;
+        top:0;
+        right: 0;
+
+        a {
+            text-decoration: none;
+        }
+
+        p {
+            cursor: pointer;
+            user-select: none;
+            margin-right: $toolbar-padding;
+        }
+    }
+}
+
+.title-bar {
+    margin: 2rem;
+    margin-top: $toolbar-height + 2rem;
 }
 
 .title {
-    position: relative;
-    top: -9rem;
-    margin-bottom: -8rem;
+    margin: 0;
+    line-height: 3rem;
+    font-size: 3rem;
     font-family: 'Gloria Hallelujah', cursive; 
-    font-size: 2 * $fontSize;
 }
 
-.form-holder {
-    position:relative;
-    text-align: center;   
-
-    form{
-        input{
-            margin-bottom: 10px;
-            border: none;
-            border-radius: 10px;
-            height: 2rem;
-            padding: 0 5px;
-            font-size: $fontSize;
-            min-width: 20rem;
-            background-color: #1b262c;
-            color: white;
-            resize: horizontal;
-        }
-
-        button{
-            border: none;
-            border-radius: 10px;
-            height: 2rem;
-            font-size: $fontSize;
-            background-color: #1b262c;
-            color: white;
-            min-width: 6rem;
-
-            &:hover{
-                cursor: pointer;
-            }
-        }
-    }
-}
-
-html[screen-size="small"]{
-    $fontSize: 3rem;
-
-    .form-holder form input {
-        height: 3rem;
-        width: 80%;
-        min-width: 8rem;
-    }
-
-    .form-holder{
-        width: 100%;
-    }
+.sub-title {
+    margin: 0;
+    line-height: 1.5rem;
+    font-size: 1.5rem;
 }
