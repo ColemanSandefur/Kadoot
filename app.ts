@@ -196,6 +196,11 @@ app.post("/create-account", async (req, res) => {
     let passwordConf = req.body.passwordConf;
     let email = req.body.email;
 
+    if (username.trim.length == 0 || password.trim.length == 0 || passwordConf.trim.length == 0 || email.trim.length == 0) {
+        res.redirect("/create-account/error=A field wasn't entered");
+        return;
+    }
+
     let credentialsUsed = await AccountManager.credentialsUsed(username, email);
 
     if (credentialsUsed == true) {
