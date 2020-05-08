@@ -28,7 +28,7 @@ import { AccountManager } from "./js_classes/account-manager";
 
 DatabaseManager.initializeDatabase();
 
-server.listen(3000, () => {
+server.listen(25565, () => {
     console.log("Listening on port *3000");
 });
 
@@ -73,12 +73,12 @@ app.get("/game-creator", (req, res) => {
             res.send(ejs.render(html.toString(), {signedin: true}));
             return;
         }
-        res.send(ejs.render(html.toString(), {signedin: false}));
-    })
-    // res.sendFile(__dirname + "/game-creator.html");
+
+        res.redirect("/sign-in/error=Please sign in to continue");
+    });
 });
 
-/* This is where the quizzes are created */
+/* This is where the quizzes are started */
 app.post("/game-creator", (req, res) => {
     let question_id = req.body.game_id;
 
@@ -121,6 +121,10 @@ app.get("/run-game", (req, res) => {
 })
 
 app.get("/quiz-creator", (req, res) => {
+    let cookie = AccountManager.getAccountId(req.headers.cookie + ";");
+    if (cookie.length == 0 || AccountManager.getAccountData(cookie) == undefined) {
+        res.redirect("/sign-in/error=Please sign in to continue");
+    }
     res.sendFile(__dirname + "/quiz-creator.html");
 });
 
@@ -128,7 +132,17 @@ app.get("/quiz-creator", (req, res) => {
 app.post("/quiz-creator", (req, res) => {
     res.redirect("/game-creator");
     let dat = <[string, string[], number[], number][]>JSON.parse(req.body["game-data"]);
-    QuestionManager.saveQuiz(req.body["quiz-name-input"], req.body["author-name-input"], dat);
+    let cookie = AccountManager.getAccountId(req.headers.cookie + ";");
+
+    if (AccountManager.getAccountData(cookie) == undefined){
+        res.redirect("/sign-in/error=Please sign in to continue");
+        return
+    }
+
+    res.redirect("/game-creator");
+
+    let accountData = <{username: string, premium: boolean, id: number}>AccountManager.getAccountData(cookie);
+    QuestionManager.saveQuiz(req.body["quiz-name-input"], accountData.username, accountData.id, dat);
 });
 
 app.get("/sign-in", (req, res) => {

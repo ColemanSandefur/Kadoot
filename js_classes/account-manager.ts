@@ -44,7 +44,7 @@ export class AccountManager {
                         cookie = this.createCookie(64);
                     } while (this.account_cookies[cookie] != null);
                     
-                    this.account_cookies[cookie] = {username: username, premium: accounts[0].premium};
+                    this.account_cookies[cookie] = {username: username, premium: accounts[0].premium, id: accounts[0].id};
 
                     res(cookie);
                 });
@@ -72,7 +72,7 @@ export class AccountManager {
         return cookie;
     }
 
-    private static account_cookies: {[cookie: string]: {username: string, premium: boolean}} = {};
+    private static account_cookies: {[cookie: string]: {username: string, premium: boolean, id: number}} = {};
 
     static getAccountData(cookie?: string){
         if (cookie)
@@ -80,6 +80,7 @@ export class AccountManager {
         
         return this.account_cookies;
     }
+
 
     static reconnectUser(socket: SocketIO.Socket) {
         let account_id = this.getAccountId(socket.handshake.headers.cookie);

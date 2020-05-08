@@ -93,7 +93,7 @@ export class QuestionManager{
         });
     }
 
-    public static saveQuiz(game_name: string, author_name: string, questions: [string, string[], number[], number][]) {
+    public static saveQuiz(game_name: string, author_name: string, account_id: number, questions: [string, string[], number[], number][]) {
         if (game_name.length > 128) {
             game_name = game_name.substr(0, 128);
         }
@@ -140,6 +140,8 @@ export class QuestionManager{
                 question[3] = 10;
             } else if (question[3] > 300) {
                 question[3] = 300;
+            } else if (question[3] < 5) {
+                question[3] = 5;
             }
         }
 
@@ -150,7 +152,7 @@ export class QuestionManager{
             return;
         }
 
-        DatabaseManager.dbQuery("INSERT INTO quizzes (game_name, author_name) VALUES (?, ?)", [game_name, author_name]).then((data) => {
+        DatabaseManager.dbQuery("INSERT INTO quizzes (game_name, author_name, account_id) VALUES (?, ?, account_id)", [game_name, author_name, account_id]).then((data) => {
             let quiz_id = (<any>data).insertId;
 
             for (let i = 0; i < questions.length; i++){
