@@ -225,6 +225,13 @@ export class Game {
         }
         socket.on("give-answer", (answer) => {
             this.user_response[cookie] = {"response": <number>answer, "time": Date.now() - this.question_cur_time};
+            if (Object.keys(this.user_response).length == Object.keys(this.user_sockets).length) {
+                console.log("hi");
+                if (this.quiz && this.cur_question_number == this.quiz.curQuestionIndex()){
+                    this.stopQuestion();
+                    return;
+                }
+            }
         });
     }
 
