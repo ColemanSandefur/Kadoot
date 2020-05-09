@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/css/my-account.css">
+    <title>My Account</title>
+</head>
+<body>
+    <div class="toolbar">
+        <p class="logo"><a href="/">Kadoot!</a></p>
+        <span class="right" >
+            <span>
+                <p id="menu-toggle" state="closed">=</p>
+                <div class="toolbar-dropdown">
+                    <p><a href="/game-creator">Start Game</a></p>
+                    <p class="join"><a href="/join">join</a></p>
+                    <p><a href="/quiz-creator">Create Quiz</a></p>
+                    <p class="logout"><a href="/logout">log out</a></p>
+                </div>
+            </span>
+        </span>
+    </div>
+    <div class="main">
+        <div class="sidebar">
+            <div class="padding"></div>
+            <p id="my-quizzes">My Quizzes</p>
+            <p id="account-info">Accont Info</p>
+        </div> 
+        <div class="content">
+            <div class="padding"></div>
+            <div class="new-content">
+
+            </div>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        let socket = io();
+        $(() => {
+
+            $("#my-quizzes").click(() => {
+                socket.emit("get-my-quizzes", (quizzes) => {
+                    $(".new-content").html("");
+
+                    if (quizzes.length == 0){ 
+                        $(".new-content").append(`<p>No Quizzes Found</p>`);
+                        return;
+                    }
+
+                    $(".new-content").html(`<ul id="games"></ul>`);
+                    formatData(quizzes);
+                });
+            });
+
+            function formatData(dat){
+                $("#games").html("");
+                for (let i = 0; i < dat.length; i++){
+                    let game_name = clean(dat[i][0]);
+                    let game_id = dat[i][1];
+                    
+                    let list = $(`<li><p>${game_name}</p></li>`);
+
+                    if (game_name.length == 0){
+                        list = $("<li><p><i>undefined<i></p></li>");
+                    }
+
+                    let span = $(`<span class="create-game" id="gameId=${game_id};"><p>play</p></span>`);
+                    $(list).append(span);
+                    $("#games").append(list);
+                    span.click(function() {
+                        let id = $(this).attr("id");
+                        id = id.substring(id.indexOf("game_id=") + "game_id=".length, id.indexOf(";", id.indexOf("game_id=")));
+                        
+                        let form = $(`<form method="POST" action="/game-creator" style="visibility: hidden"><input name="game_id" value="${id}"></form>`);
+                        $("body").append(form);
+                        form.submit();
+                    });
+                }
+            }
+
+            function clean(msg){ //Cleanse the message from potentially hazardous characters
+
+                for (var i = 0; i < msg.length; i++){
+                    if (msg.charAt(i) == "&"){
+                        var first = msg.substring(0, i);
+                        var last = msg.substring(i + 1);
+                        msg = first + "&amp" + last;
+                    }
+                }
+
+                while (msg.indexOf('"') > -1) {
+                    
+                }
+
+                while (msg.indexOf("<") > -1) {
+                    msg = msg.replace("<", "&lt;");
+                }
+
+                while (msg.indexOf(">") > -1) {
+                    msg = msg.replace(">", "&gt;");
+                }
+
+                while (msg.indexOf("\\") > -1){
+                    msg = msg.replace("\\", "&bsol");
+                }
+
+                return msg;
+            }
+
+            $("#account-info").click(() => {
+                socket.emit("get-account-info", (account_info) => {
+                    $(".new-content").html("");
+
+                    let username = $(`<p id="username"><span class="account-data">username:</span>\t ${account_info.username}</p>`);
+                    let email = $(`<p id="email"><span class="account-data">email:</span> ${account_info.email}</p>`);
+                    let tmpDate = new Date(account_info.date);
+                    let date = $(`<p id="registered"><span class="account-data">date joined:</span> ${tmpDate.toString()}</p>`);
+                    let premium = $(`<p id="premium"><span class="account-data">account status:</span> ${(account_info.permium == 1)? "Premium": "Not Premium"}</p>`);
+
+                    $(".new-content").append([username, email, date, premium]);
+                    // $(".new-content").append(username);
+                    // $(".new-content").append(email);
+                    // $(".new-content").append(date);
+                    // $(".new-content").parse(premium);
+                });
+            })
+
+            $("#menu-toggle").click(() => {
+                if ($(".toolbar-dropdown").css("visibility") == "visible") {
+                    $(".toolbar-dropdown").css("visibility", "hidden");
+                    $("#menu-toggle").attr("state", "closed");
+                    $(".shade").remove();
+                } else {
+                    $("body").append($(`<div style="width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, .5); z-index: 1; position: absolute; top: 0; left: 0;" class="shade"></div>`).click(() => {
+                        $(".toolbar-dropdown").css("visibility", "hidden");
+                        $("#menu-toggle").attr("state", "closed");
+                        $(".shade").remove();
+                    }));
+                    $("#menu-toggle").attr("state", "open");
+                    $(".toolbar-dropdown").css("visibility", "visible");
+                }
+            });
+        })
+    </script>
+</body>
+</html>

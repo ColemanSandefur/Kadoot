@@ -147,7 +147,7 @@ export class QuestionManager{
             return;
         }
 
-        DatabaseManager.dbQuery("INSERT INTO quizzes (game_name, author_name, account_id) VALUES (?, ?, account_id)", [game_name, author_name, account_id]).then((data) => {
+        DatabaseManager.dbQuery("INSERT INTO quizzes (game_name, author_name, account_id) VALUES (?, ?, ?)", [game_name, author_name, account_id]).then((data) => {
             let quiz_id = (<any>data).insertId;
 
             for (let i = 0; i < questions.length; i++){

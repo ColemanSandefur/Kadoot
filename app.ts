@@ -29,7 +29,7 @@ import { AccountManager } from "./js_classes/account-manager";
 DatabaseManager.initializeDatabase();
 
 server.listen(25565, () => {
-    console.log("Listening on port *3000");
+    console.log("Listening on port *25565");
 });
 
 app.get("/", (req, res) => {
@@ -182,6 +182,17 @@ app.get("/create-account", (req, res) => {
     });
 });
 
+app.get("/my-account", (req, res) => {
+    if (AccountManager.getAccountData(AccountManager.getAccountId(req.headers.cookie + ";")) == undefined) {
+        res.redirect("/sign-in/error=Please sign in to continue");
+        return;
+    }
+
+    fs.readFile(__dirname + "/my-account.html", (err, html) => {
+        res.send(ejs.render(html.toString(), {}));
+    })
+})
+
 /* gives user error message in html document using ejs */
 app.get("/create-account/error=:error", (req, res) => {
     fs.readFile(__dirname + "/account-creator.html", (err, html) => {
@@ -246,7 +257,6 @@ app.get("/admin-game/:oneTimeCode", (req, res) => {
         res.redirect("/join");
         return;
     } else if (linkData.host == false) {
-        console.log("not host");
         res.redirect("/join");
         return;
     }
