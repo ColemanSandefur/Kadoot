@@ -11,7 +11,6 @@
         <div class="top-bar">
             <div class="inputs">
                 <input size="1" type="text" id="quiz-name-input" name="quiz-name-input" placeholder="Quiz Name" maxlength="128">
-                <input size="1" type="text" id="author-name-input" name="author-name-input" placeholder="Author Name" maxlength="64">
             </div>
             <div class="create-button"><div>create</div></div>
         </div>
@@ -235,7 +234,7 @@
 
             $(".create-button").click(() => {
                 let quiz_name = $("#quiz-name-input");
-                let author_name = $("#author-name-input");
+                // let author_name = $("#author-name-input");
 
                 if (quiz_name.val().trim().length == 0){
                     alert("please add a quiz name");
@@ -281,7 +280,7 @@
                     input.val(JSON.stringify(reformatForStreaming()));
 
                     form.append(quiz_name);
-                    form.append(author_name);
+                    // form.append(author_name);
                     form.append(input);
 
                     $("body").append(form);

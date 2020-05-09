@@ -111,7 +111,6 @@ export class QuestionManager{
             if (question[0].trim().length == 0) {
                 questions.splice(i,1);
                 i--;
-                console.log("splice");
                 continue;
             } 
 
@@ -122,7 +121,6 @@ export class QuestionManager{
             let allEmpty = true;
 
             for (let j = 0; j < question[1].length; j++){
-                console.log(question[1][j].trim().length);
                 if (question[1][j].trim().length > 0){
                     allEmpty = false;
                     break;
@@ -130,7 +128,6 @@ export class QuestionManager{
             }
 
             if (allEmpty){
-                console.log("all empty");
                 questions.splice(i, 1);
                 i--;
                 continue;
@@ -144,8 +141,6 @@ export class QuestionManager{
                 question[3] = 5;
             }
         }
-
-        console.log(questions);
 
         //Don't insert any quizes that don't have a name or any questions
         if (game_name.trim().length == 0 || questions.length == 0){

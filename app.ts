@@ -130,7 +130,6 @@ app.get("/quiz-creator", (req, res) => {
 
 /* This is wehre the quizzes are created and saved */
 app.post("/quiz-creator", (req, res) => {
-    res.redirect("/game-creator");
     let dat = <[string, string[], number[], number][]>JSON.parse(req.body["game-data"]);
     let cookie = AccountManager.getAccountId(req.headers.cookie + ";");
 

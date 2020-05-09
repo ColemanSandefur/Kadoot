@@ -1,6 +1,8 @@
 import mysql = require("mysql");
 import { QuestionManager } from "./question-manager";
 
+const pingDelayMs = 1 * 60 * 60 * 1000;
+
 var con = mysql.createConnection({
     host: "localhost",
     user: "root",
@@ -15,6 +17,11 @@ con.connect((err) => {
     console.log("Connected to the database server!");
 });
 
+// Ping once every pingDelayMs to keep connection alive
+setInterval(function() {
+    con.ping();
+}, pingDelayMs) ;
+
 export class DatabaseManager{
     private static con = con;
 
@@ -28,7 +35,6 @@ export class DatabaseManager{
                 this.dbQuery("CREATE TABLE IF NOT EXISTS `accounts` (`id` int unsigned NOT NULL AUTO_INCREMENT,`username` varchar(64) NOT NULL,`passhash` varchar(64) NOT NULL,`email` varchar(128) NOT NULL,`date` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,`premium` tinyint NOT NULL DEFAULT '0',PRIMARY KEY (`id`),UNIQUE KEY `id_UNIQUE` (`id`),UNIQUE KEY `username_UNIQUE` (`username`),UNIQUE KEY `email_UNIQUE` (`email`),UNIQUE KEY `passhash_UNIQUE` (`passhash`)) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci")
                 console.log("connected to the kadoot_data database");
             });
-            
         });
     }
 
