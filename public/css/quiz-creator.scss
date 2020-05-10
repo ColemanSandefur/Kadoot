@@ -85,8 +85,27 @@ body {
 html[screen-size="small"] {
     .top-bar {
         div.inputs {
+            box-sizing: border-box;
+            width: 100%;
+            padding: .5rem;
             input {
+                box-sizing: border-box;
                 width: 100%;
+                margin: 0;
+            }
+        }
+        .create-button {
+            box-sizing: border-box;
+            width: 100%;
+            margin: 0;
+            padding: .5rem;
+            background-color: rgba($color: #000000, $alpha: 0);
+            div {
+                text-align: center;
+                background-color: $mainColor;
+                border-radius: $borderRadius;
+                width: 100%;
+                margin: 0;
             }
         }
     }

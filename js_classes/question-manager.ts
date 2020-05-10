@@ -220,6 +220,7 @@ export class QuestionManager{
         if (game_name.trim().length == 0 || questions.length == 0){
             return;
         }
+        DatabaseManager.dbQuery("UPDATE quizzes SET game_name=? WHERE id=?", [game_name, quiz_id]);
 
         DatabaseManager.dbQuery("DELETE FROM questions WHERE quiz_id=?", [quiz_id]).then(() => {
             for (let i = 0; i < questions.length; i++){
