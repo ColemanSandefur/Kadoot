@@ -11,7 +11,6 @@ body {
     margin: 0;
     width: 100vw;
     background-color: #0f4c75;
-    margin-top: $toolbar-height;
 }
 
 
@@ -19,7 +18,7 @@ body {
 .toolbar {
     z-index: 2;
     user-select: none;
-    position: absolute;
+    position: sticky;
     top: 0;
     padding:0;
     margin:0;
@@ -88,12 +87,11 @@ body {
 }
 
 .title-bar{
+    z-index: 1;
     position: sticky;
     top: $toolbar-height;
-    // height: $fontSize + .5rem;
     height: auto;
     background-color: #0c3f60;
-    // background-color: #1b262c;
     padding: .5rem;
     
     display: grid;
@@ -180,4 +178,14 @@ html[screen-size="small"] {
 #menu-toggle[state="open"] {
     transform: rotate((90deg));
     line-height: 1.4;
+}
+
+.shade {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, .5);
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    left: 0;
 }

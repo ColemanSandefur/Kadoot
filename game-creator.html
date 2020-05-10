@@ -58,7 +58,7 @@
                     $("#menu-toggle").attr("state", "closed");
                     $(".shade").remove();
                 } else {
-                    $("body").append($(`<div style="width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, .5); z-index: 1; position: absolute; top: 0; left: 0;" class="shade"></div>`).click(() => {
+                    $("body").append($(`<div style="" class="shade"></div>`).click(() => {
                         $(".toolbar-dropdown").css("visibility", "hidden");
                         $("#menu-toggle").attr("state", "closed");
                         $(".shade").remove();
