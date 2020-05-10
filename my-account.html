@@ -61,7 +61,7 @@
                     let game_name = clean(dat[i][0]);
                     let game_id = dat[i][1];
                     
-                    let list = $(`<li><p>${game_name}</p></li>`);
+                    let list = $(`<li id="${game_id}"><p>${game_name}</p></li>`);
 
                     if (game_name.length == 0){
                         list = $("<li><p><i>undefined<i></p></li>");
@@ -70,7 +70,9 @@
                     let game_buttons = $(`<div class="game-buttons"></div>`);
                     let create_game = $(`<div class="create-game" id="gameId=${game_id};"><p>play</p></div>`);
                     let edit_game = $(`<div class="edit-game" id="gameId=${game_id};"><p>edit</p></div>`);
-                    game_buttons.append([edit_game, create_game]);
+                    let create_game_holder = $(`<div class="button-holder"></div>`).append(create_game);
+                    let edit_game_holder = $(`<div class="button-holder"></div>`).append(edit_game);
+                    game_buttons.append([edit_game_holder, create_game_holder]);
                     $(list).append(game_buttons);
                     $("#games").append(list);
                     create_game.click(function() {
@@ -121,6 +123,51 @@
                 return msg;
             }
 
+            function changedWindowSize() {
+                if ($("html").width() < 565) {
+                    $("html").attr("screen-size", "small");
+                    $(".main").attr("state", "closed");
+                    addSidebarButton();
+                } else {
+                    $("html").attr("screen-size", "large");
+                    $(".sidebar-button").remove();
+                }
+            }
+
+            window.onresize = changedWindowSize;
+
+            changedWindowSize();
+
+            function addSidebarButton() {
+                if ($(".sidebar-button").length > 0) {
+                    return;
+                }
+                let button = $(`<div class="sidebar-button">\></div>`).click(function() {
+                    toggleSideBar()
+                });
+                $(".main").append(button);
+            }
+
+            function toggleSideBar() {
+                if ($(".main").attr("state") == "closed") {
+                    openSidebar()
+                } else {
+                    closeSidebar();
+                }
+
+                function openSidebar() {
+                    $(".main").attr("state", "open");
+                    $("body").append($(`<div style="" class="shade"></div>`).click(() => {closeSidebar()}));
+                    $(".sidebar-button").html("\<");
+                }
+
+                function closeSidebar() {
+                    $(".main").attr("state", "closed");
+                    $(".shade").remove();
+                    $(".sidebar-button").html("\>");
+                }
+            }
+
             $("#account-info").click(() => {
                 socket.emit("get-account-info", (account_info) => {
                     $(".new-content").html("");
@@ -139,12 +186,12 @@
                 if ($(".toolbar-dropdown").css("visibility") == "visible") {
                     $(".toolbar-dropdown").css("visibility", "hidden");
                     $("#menu-toggle").attr("state", "closed");
-                    $(".shade").remove();
+                    $(".shade2").remove();
                 } else {
-                    $("body").append($(`<div style="width: 100vw; height: 100vh; background-color: rgba(0, 0, 0, .5); z-index: 1; position: absolute; top: 0; left: 0;" class="shade"></div>`).click(() => {
+                    $("body").append($(`<div style="" class="shade2"></div>`).click(() => {
                         $(".toolbar-dropdown").css("visibility", "hidden");
                         $("#menu-toggle").attr("state", "closed");
-                        $(".shade").remove();
+                        $(".shade2").remove();
                     }));
                     $("#menu-toggle").attr("state", "open");
                     $(".toolbar-dropdown").css("visibility", "visible");

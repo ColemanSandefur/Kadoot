@@ -16,9 +16,9 @@ body {
 }
 
 .toolbar {
-    z-index: 2;
+    z-index: 3;
     user-select: none;
-    position: absolute;
+    position: fixed;
     top: 0;
     padding:0;
     margin:0;
@@ -67,8 +67,8 @@ body {
 
 .toolbar-dropdown {
     visibility: hidden;
-    z-index: 3;
-    position: absolute;
+    z-index: 4;
+    position: fixed;
     top: $toolbar-height;
     right: 0;
     display: inline-block;
@@ -97,8 +97,10 @@ body {
     background-color: #1a3b4e;
     width:100%;
     font-size: $fontSize;
+    user-select: none;
 
     p {
+        cursor: pointer;
         display: inline-block;
         margin-left: 1rem;
     }
@@ -129,7 +131,7 @@ body {
                 display: inline-block;
                 margin: 0;
                 margin-bottom: .5rem;
-                margin-right: 7.2rem;
+                margin-right: 7.2rem * 2;
                 word-break: break-all;
                 word-break: break-word;
                 padding: 0;
@@ -139,8 +141,10 @@ body {
                 position: absolute;
                 right: 0;
                 display: inline-block;
-
-                div {
+                .button-holder {
+                    display: inline-block;
+                }
+                .create-game, .edit-game {
                     display: inline-block;
                     background-color: #1b262c;
                     border: none;
@@ -170,4 +174,102 @@ body {
 .account-data {
     font-size: $fontSize + 1rem;
     margin-right: 5rem;
+}
+
+.shade {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, .5);
+    z-index: 1;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+.shade2 {
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, .5);
+    z-index: 2;
+    position: fixed;
+    top: 0;
+    left: 0;
+}
+
+html[screen-size="small"] {
+    body {
+        width: 100vw;
+    }
+    .main {
+        grid-template-columns: 100%;
+    }
+    .sidebar-button {
+        z-index: 2;
+        position: fixed;
+        margin: 0;
+        padding: 0;
+        font-size: 2rem;
+        top: $toolbar-height + .25rem;
+        left: 16rem;
+        cursor: pointer;
+        user-select: none;
+        height: 2rem;
+        width: 2rem;
+        background-color: #1b262c;
+        text-align: center;
+        border-radius: 10px;
+        line-height: 2rem;
+        border: 2px solid white;
+    }
+    .main[state="closed"] {
+        .sidebar-button {
+            z-index: 0;
+            left: 1rem;
+        }
+        .sidebar {
+            display: none;
+        }
+    }
+    .sidebar {
+        z-index: 2;
+        display: block;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 15rem;
+        height: 100vh;
+    }
+    .content {
+        .padding {
+            height: $toolbar-height + 2rem;
+        }
+    }
+
+    .new-content {
+        #games {
+            li {
+                p {
+                    margin-bottom: 0;
+                    margin-right: 0;
+                }
+                .game-buttons {
+                    width: 100%;
+                    height: 3rem;
+                    position: relative;
+                    margin-bottom: 1.5rem;
+                    .button-holder {
+                        box-sizing: border-box;
+                        width: 50%;
+                        margin: 0;
+                        padding: 10px;
+                        display: inline-block;
+                        .create-game, .edit-game {
+                            width: 100%;
+                            margin: 0;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
