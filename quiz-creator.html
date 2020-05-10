@@ -43,9 +43,15 @@
             function formatToJSON(data) {
                 // data = JSON.parse(data);
                 let new_data = [];
+
+                if (data.length == 0) {
+                    return [];
+                }
+
                 $("#quiz-name-input").val("" + clean(data[0]));
 
                 for (let i = 1; i < data.length; i++){
+                    console.log(data[i]);
                     new_data.push({question: data[i][0], choices : JSON.parse(data[i][1]), answers: JSON.parse(data[i][2]), question_time: data[i][3]});
                 }
 

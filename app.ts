@@ -184,7 +184,7 @@ app.get("/quiz-creator", (req, res) => {
         return;
     }
     fs.readFile(__dirname + "/quiz-creator.html", (err, html) => {
-        res.send(ejs.render(html.toString(), {editing: false, quiz_data: JSON.stringify(["steve",["ff", ["ff", "ff"], [], 10]])}));
+        res.send(ejs.render(html.toString(), {editing: false, quiz_data: JSON.stringify([])}));
         return;
     });
 });

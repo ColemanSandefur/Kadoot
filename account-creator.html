@@ -7,7 +7,7 @@
     <title>Create an Account</title>
 </head>
 <body>
-    <div>
+    <div class="content">
         <% if (typeof(error) != "undefined") { %>
         <div class="alert"><%= error %></div>
         <% } %>
@@ -47,12 +47,37 @@
         $(() => {
             $("form").submit((e) => {
                 if ($("#password").val() != $("#passwordConf").val()) {
-                    // $(".alert").remove();
-                    // $("#form-holder").parent().prepend(`<div class="alert">Passwords don't match</div>`);
-                    // $("html").attr("error", "true");
-                    // e.preventDefault();
+                    $(".alert").remove();
+                    $("#form-holder").parent().prepend(`<div class="alert">Passwords don't match</div>`);
+                    $("html").attr("error", "true");
+                    e.preventDefault();
                 }
             });
+
+            function changedWindowSize() {
+                console.log('h')
+                if ($("html").width() < 420) {
+                    console.log("small");
+                    $("html").attr("screen-size", "small");
+                } else {
+                    $("html").attr("screen-size", "large");
+                }
+            }
+
+            function getMeta(metaName) {
+                const metas = document.getElementsByTagName("meta");
+
+                for (let i = 0; i < metas.length; i++){ 
+                    if (metas[i].getAttribute('name') === metaName) {
+                        return metas[i].getAttribute('content');
+                    }
+                }
+
+                return "";
+            }
+
+            window.onresize = changedWindowSize;
+            changedWindowSize();
         });
     </script>
     <% if (typeof(error) != "undefined") { %>

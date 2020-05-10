@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" error="false">
+<html lang="en" error="false" screen-size="large">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,7 +9,7 @@
 </head>
 <body>
     
-    <div>
+    <div class="content">
         <% if (typeof(error) != "undefined") { %>
             <div class="alert"><%= error %></div>
         <% } %>
@@ -24,7 +24,10 @@
                 <p class="info">Password</p>
     
                 <div class="input-holder">
-                    <input size="1" type="password" name="password" id="password" class="inputs" required><br>
+                    <div class="input-holder2">
+                        <input type="password" name="password" id="password" class="inputs" required><br>
+                    </div>
+                    
                 </div>
                 
                 <div style="text-align: center;">
@@ -46,5 +49,32 @@
             $("html").attr("error", "true");
         </script>
     <% } %>
+
+    <script>
+        function changedWindowSize() {
+            console.log('h')
+            if ($("html").width() < 420) {
+                console.log("small");
+                $("html").attr("screen-size", "small");
+            } else {
+                $("html").attr("screen-size", "large");
+            }
+        }
+
+        function getMeta(metaName) {
+            const metas = document.getElementsByTagName("meta");
+
+            for (let i = 0; i < metas.length; i++){ 
+                if (metas[i].getAttribute('name') === metaName) {
+                    return metas[i].getAttribute('content');
+                }
+            }
+
+            return "";
+        }
+
+        window.onresize = changedWindowSize;
+        changedWindowSize();
+    </script>
 </body>
 </html>
