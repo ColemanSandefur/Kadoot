@@ -164,7 +164,79 @@ export class QuestionManager{
                 }
                 DatabaseManager.dbQuery("INSERT INTO questions (quiz_id, question, choices, answers, question_time) VALUES (?, ?, ?, ?, ?)", [quiz_id, question[0], JSON.stringify(question[1]), JSON.stringify(question[2]), question[3]]);
             }
-        })
+        });
+    }
+
+    public static updateQuiz(game_name: string, author_name: string, account_id: number, quiz_id: number, questions: [string, string[], number[], number][]) {
+        if (game_name.length > 128) {
+            game_name = game_name.substr(0, 128);
+        }
+        if (author_name.length > 64) {
+            author_name = author_name.substr(0, 64);
+        }
+
+        for (let i = 0; i < questions.length; i++){ //remove any questions that have an empty title or have no answers with text in
+            let question = questions[i];
+
+            if (questions.length == 0){
+                break;
+            }
+
+            if (question[0].trim().length == 0) {
+                questions.splice(i,1);
+                i--;
+                continue;
+            } 
+
+            if (question[1].length > 4) {
+                question[1].splice(4);
+            }
+
+            let allEmpty = true;
+
+            for (let j = 0; j < question[1].length; j++){
+                if (question[1][j].trim().length > 0){
+                    allEmpty = false;
+                    break;
+                }
+            }
+
+            if (allEmpty){
+                questions.splice(i, 1);
+                i--;
+                continue;
+            }
+
+            if ((question[3] + "").length == 0){
+                question[3] = 10;
+            } else if (question[3] > 300) {
+                question[3] = 300;
+            } else if (question[3] < 5) {
+                question[3] = 5;
+            }
+        }
+
+        //Don't insert any quizes that don't have a name or any questions
+        if (game_name.trim().length == 0 || questions.length == 0){
+            return;
+        }
+
+        DatabaseManager.dbQuery("DELETE FROM questions WHERE quiz_id=?", [quiz_id]).then(() => {
+            for (let i = 0; i < questions.length; i++){
+                let question = questions[i];
+                
+                if (question[0].length > 256) {
+                    question[0] = question[0].substr(0, 256);
+                }
+
+                for (let i = 0; i < question[1].length; i++){
+                    if (question[1][i].length > 60){
+                        question[1][i] = question[1][i].substr(0, 60);
+                    }
+                }
+                DatabaseManager.dbQuery("INSERT INTO questions (quiz_id, question, choices, answers, question_time) VALUES (?, ?, ?, ?, ?)", [quiz_id, question[0], JSON.stringify(question[1]), JSON.stringify(question[2]), question[3]]);
+            }
+        });
     }
 
     private static makeRegex(query: string) {

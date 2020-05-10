@@ -103,6 +103,63 @@ app.post("/game-creator", (req, res) => {
     res.redirect("/admin-game");
 });
 
+app.post("/quiz-editor", (req, res) => {
+    let quiz_id = req.body.game_id;
+    let cookie = AccountManager.getAccountId(req.headers.cookie + ";");
+    if (cookie.length == 0 || AccountManager.getAccountData(cookie) == undefined) {
+        res.redirect("/sign-in/error=Please sign in to continue 1");
+        return;
+    } 
+
+    DatabaseManager.dbQuery("SELECT * FROM quizzes WHERE id=?", [req.body.game_id]).then((data) => {
+        if (data.length == 0){
+            res.redirect("/my-account");
+            return;
+        }
+
+        if (data[0].account_id != AccountManager.getAccountData(cookie).id) {
+            res.redirect("/sign-in/error=Please sign in to continue 2");
+            return;
+        }
+
+        DatabaseManager.dbQuery("SELECT * FROM questions WHERE quiz_id=?", [data[0].id]).then((questions) => {
+            let question_data: any[][] = [data[0].game_name];
+
+            for (let i = 0; i < questions.length; i++) {
+                question_data.push([questions[i].question, questions[i].choices, questions[i].answers, questions[i].question_time]);
+            }
+
+            fs.readFile(__dirname + "/quiz-creator.html", (err, html) => {
+                res.send(ejs.render(html.toString(), {editing: true, quiz_data: JSON.stringify(question_data), quiz_id: data[0].id}));
+                return;
+            });
+        })
+    });
+});
+
+app.post("/update-quiz", async(req, res) => {
+    let dat = <[string, string[], number[], number][]>JSON.parse(req.body["game-data"]);
+    let cookie = AccountManager.getAccountId(req.headers.cookie + ";");
+
+    if (AccountManager.getAccountData(cookie) == undefined){
+        res.redirect("/sign-in/error=Please sign in to continue");
+        return;
+    }
+
+    let query = await DatabaseManager.dbQuery("SELECT * FROM quizzes where id=?", [req.body.quiz_id]);
+
+    if (query[0].account_id != AccountManager.getAccountData(cookie).id) {
+        res.redirect("/sign-in/error=Please sign in to continue");
+        return;
+    }
+
+    let accountData = <{username: string, premium: boolean, id: number}>AccountManager.getAccountData(cookie);
+    QuestionManager.updateQuiz(req.body["quiz-name-input"], accountData.username, accountData.id, req.body.quiz_id, dat);
+
+    res.redirect("/game-creator");
+    return;
+});
+
 app.get("/admin-game", (req, res) => {
     res.sendFile(__dirname + "/admin-game.html");
 })
@@ -124,8 +181,12 @@ app.get("/quiz-creator", (req, res) => {
     let cookie = AccountManager.getAccountId(req.headers.cookie + ";");
     if (cookie.length == 0 || AccountManager.getAccountData(cookie) == undefined) {
         res.redirect("/sign-in/error=Please sign in to continue");
+        return;
     }
-    res.sendFile(__dirname + "/quiz-creator.html");
+    fs.readFile(__dirname + "/quiz-creator.html", (err, html) => {
+        res.send(ejs.render(html.toString(), {editing: false, quiz_data: JSON.stringify(["steve",["ff", ["ff", "ff"], [], 10]])}));
+        return;
+    });
 });
 
 /* This is wehre the quizzes are created and saved */

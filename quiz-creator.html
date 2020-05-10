@@ -34,13 +34,25 @@
             </div>
         </div>
     </div>
-
     <script src="/socket.io/socket.io.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
+        
+
         $(() => {
+            function formatToJSON(data) {
+                // data = JSON.parse(data);
+                let new_data = [];
+                $("#quiz-name-input").val("" + clean(data[0]));
+
+                for (let i = 1; i < data.length; i++){
+                    new_data.push({question: data[i][0], choices : JSON.parse(data[i][1]), answers: JSON.parse(data[i][2]), question_time: data[i][3]});
+                }
+
+                return new_data;
+            }
             let colors = ["green", "red", "purple", "blue"];
-            let questions = [];
+            let questions = formatToJSON(<%- quiz_data %>); //[{question:"", choices: [""], answers: [], question_time: 0}]
             let cur_question_index = -1;
 
             $("#question-input").keyup(function() {
@@ -275,13 +287,15 @@
                 }
 
                 function upload() {
-                    let form = $(`<form method="POST" action="/quiz-creator" style="visibility: hidden"></form>`);
+                    let form = $(`<form method="POST" action="/<%= (editing == true)? "update-quiz" : "quiz-creator" %>" style="visibility: hidden"></form>`);
                     let input = $(`<input name="game-data" id="game-data">`);
                     input.val(JSON.stringify(reformatForStreaming()));
 
                     form.append(quiz_name);
-                    // form.append(author_name);
                     form.append(input);
+                    <% if (editing === true) { %>
+                        form.append($(`<input name="quiz_id" id="quiz_id">`).val(<%= quiz_id %>));
+                    <% } %>
 
                     $("body").append(form);
 

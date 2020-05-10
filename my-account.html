@@ -26,7 +26,7 @@
         <div class="sidebar">
             <div class="padding"></div>
             <p id="my-quizzes">My Quizzes</p>
-            <p id="account-info">Accont Info</p>
+            <p id="account-info">Account Info</p>
         </div> 
         <div class="content">
             <div class="padding"></div>
@@ -53,7 +53,7 @@
                     $(".new-content").html(`<ul id="games"></ul>`);
                     formatData(quizzes);
                 });
-            });
+            }).click();
 
             function formatData(dat){
                 $("#games").html("");
@@ -67,14 +67,25 @@
                         list = $("<li><p><i>undefined<i></p></li>");
                     }
 
-                    let span = $(`<span class="create-game" id="gameId=${game_id};"><p>play</p></span>`);
-                    $(list).append(span);
+                    let game_buttons = $(`<div class="game-buttons"></div>`);
+                    let create_game = $(`<div class="create-game" id="gameId=${game_id};"><p>play</p></div>`);
+                    let edit_game = $(`<div class="edit-game" id="gameId=${game_id};"><p>edit</p></div>`);
+                    game_buttons.append([edit_game, create_game]);
+                    $(list).append(game_buttons);
                     $("#games").append(list);
-                    span.click(function() {
+                    create_game.click(function() {
                         let id = $(this).attr("id");
                         id = id.substring(id.indexOf("game_id=") + "game_id=".length, id.indexOf(";", id.indexOf("game_id=")));
                         
                         let form = $(`<form method="POST" action="/game-creator" style="visibility: hidden"><input name="game_id" value="${id}"></form>`);
+                        $("body").append(form);
+                        form.submit();
+                    });
+                    edit_game.click(function() {
+                        let id = $(this).attr("id");
+                        id = id.substring(id.indexOf("game_id=") + "game_id=".length, id.indexOf(";", id.indexOf("game_id=")));
+                        
+                        let form = $(`<form method="POST" action="/quiz-editor" style="visibility: hidden"><input name="game_id" value="${id}"></form>`);
                         $("body").append(form);
                         form.submit();
                     });
@@ -121,10 +132,6 @@
                     let premium = $(`<p id="premium"><span class="account-data">account status:</span> ${(account_info.permium == 1)? "Premium": "Not Premium"}</p>`);
 
                     $(".new-content").append([username, email, date, premium]);
-                    // $(".new-content").append(username);
-                    // $(".new-content").append(email);
-                    // $(".new-content").append(date);
-                    // $(".new-content").parse(premium);
                 });
             })
 

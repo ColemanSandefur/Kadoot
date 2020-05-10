@@ -134,28 +134,35 @@ body {
                 word-break: break-word;
                 padding: 0;
             }
-            
-            .create-game{
-                position: absolute;
-                right: .5rem;
-                background-color: #1b262c;
-                border: none;
-                border-radius: 10px;
-                // padding: .2rem;
-                transition: background-color .2s ease-in-out;
-                text-align: center;
-                cursor: pointer;
-                user-select: none;
-                width: 6.2rem;
-                p{
-                    margin: 0;
-                    padding: 0;
-                }
 
-                &:hover {
-                    background-color: green;
+            .game-buttons {
+                position: absolute;
+                right: 0;
+                display: inline-block;
+
+                div {
+                    display: inline-block;
+                    background-color: #1b262c;
+                    border: none;
+                    border-radius: 10px;
+                    transition: background-color .2s ease-in-out;
+                    text-align: center;
+                    cursor: pointer;
+                    user-select: none;
+                    width: 6.2rem;
+                    margin-right: .5rem;
+                    p{
+                        margin: 0;
+                        padding: 0;
+                    }
+
+                    &:hover {
+                        background-color: green;
+                    }
                 }
             }
+            
+            
         }
     }
 }

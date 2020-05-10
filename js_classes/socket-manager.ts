@@ -23,7 +23,9 @@ export class SocketManager {
         });
 
         socket.on("get-my-quizzes", (callback) => {
-            console.log("hi");
+            if (AccountManager.getAccountData(AccountManager.getAccountId(socket.handshake.headers.cookie)) == undefined) {
+                return;
+            }
             DatabaseManager.dbQuery("SELECT * FROM quizzes WHERE account_id=?", [AccountManager.getAccountData(AccountManager.getAccountId(socket.handshake.headers.cookie)).id]).then((dat) => {
                 let arr = [];
 
@@ -36,6 +38,9 @@ export class SocketManager {
         });
 
         socket.on("get-account-info", (callback) => {
+            if (AccountManager.getAccountData(AccountManager.getAccountId(socket.handshake.headers.cookie)) == undefined) {
+                return;
+            }
             DatabaseManager.dbQuery("SELECT username, email, date, premium FROM accounts WHERE id=?", [AccountManager.getAccountData(AccountManager.getAccountId(socket.handshake.headers.cookie)).id]).then((dat) => {
                 if (dat.length == 0) {
                     callback();
