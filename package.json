@@ -24,7 +24,7 @@
     "mongodb": "^3.5.4",
     "mysql": "^2.18.1",
     "socket.io": "^2.3.0",
-    "typescript": "^3.8.2"
+    "typescript": "^3.9.2"
   },
   "devDependencies": {
     "@types/bcrypt": "^3.0.0",

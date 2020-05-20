@@ -239,10 +239,14 @@ html[screen-size="small"] {
     height: 100%;
     background-color: $accentColor;
     overflow-y: scroll;
+    box-sizing: border-box;
+    width: 100%;
+    padding: .5rem;
 
     div {
-        width: 90%;
-        margin: .5rem;
+        box-sizing: border-box;
+        padding: 1rem;
+        width: 100%;
         background-color: $mainColor;
         border: none;
         border-radius: $borderRadius;
@@ -254,14 +258,16 @@ html[screen-size="small"] {
         user-select: none;
         position: relative;
         overflow: hidden;
+        margin-bottom: .5rem;
 
         &.add-question {
             div {
+                box-sizing: content-box;
                 display: grid;
                 justify-items: center;
                 align-items: center;
-                width: 2rem;
-                height: 2rem;
+                width: 1rem;
+                height: 1rem;
                 background-color: grey;
             }
         }
@@ -295,12 +301,24 @@ html[screen-size="small"] {
             border: solid;
             border-color: white;
             border-width: .1rem;
-            margin: .4rem;
         }
     }
 }
 
 .main-content {
+    #input-holder {
+        display: grid;
+        grid-template-columns: auto 6rem;
+
+        div {
+            width: 100%;
+            padding-right: .5rem;
+            box-sizing: border-box;
+        }
+    }
+
+
+
     #question-input {
         background-color: $accentColor;
         border: none;
@@ -310,7 +328,8 @@ html[screen-size="small"] {
         font-size: 3rem;
         color: white;
         height: 100%;
-        width: 80%;
+        width: 100%;
+        box-sizing: border-box;
         user-select: none;
     }
 
@@ -323,7 +342,8 @@ html[screen-size="small"] {
         font-size: 3rem;
         color: white;
         height: 100%;
-        width: 18%;
+        width: 100%;
+        box-sizing: border-box;
         user-select: none;
     }
 
