@@ -23,7 +23,7 @@
     "flake-idgen": "^1.1.2",
     "mongodb": "^3.5.4",
     "mysql": "^2.18.1",
-    "socket.io": "^2.3.0",
+    "socket.io": "^2.5.0",
     "typescript": "^3.9.2"
   },
   "devDependencies": {
